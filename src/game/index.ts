@@ -16,6 +16,13 @@ export const createGameState = (): Game => {
 	};
 };
 
+export const createEmptyInventory = (): Record<Resource, number> => {
+	return Object.fromEntries(resources.map((r) => [r, 0])) as Record<
+		Resource,
+		number
+	>;
+};
+
 const resources = [1, 2, 3] as Resource[];
 
 const resourceWeight = {
