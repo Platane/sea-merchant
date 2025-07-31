@@ -94,27 +94,19 @@ const nextLeg = (fr: { route: Route; legIndex: number }) => {
 	fr.legIndex = (fr.legIndex + 1) % fr.route.legs.length;
 };
 
-export const stepShipBusiness = (ship: Ship, state: Game) => {};
-
 export const stepShipMovement = (ship: Ship, state: Game) => {
-	const targetPort =
-		ship.followingRoute &&
-		ship.followingRoute.route.legs[ship.followingRoute.legIndex].port;
-
-	if (!targetPort) return;
-
-	const tx = targetPort.position[0];
-	const ty = targetPort.position[1];
-
-	const dx = tx - ship.position[0];
-	const dy = ty - ship.position[1];
+	const dx = ship.target[0] - ship.position[0];
+	const dy = ship.target[1] - ship.position[1];
 
 	const l = Math.hypot(dx, dy);
 
 	const speed = ship.blueprint.speed;
 
 	if (l < speed) {
-		targetPort.shipQueue.push(ship);
+		ship.target[0] - ship.position[0];
+		ship.target[1] - ship.position[1];
+
+		return;
 	}
 
 	const vx = dx / l;
@@ -125,6 +117,46 @@ export const stepShipMovement = (ship: Ship, state: Game) => {
 
 	ship.position[0] += vx * speed;
 	ship.position[1] += vy * speed;
+};
+
+export const stepShipBusiness = (ship: Ship, state: Game) => {
+	//
+	// let's make the target the port queue
+	//
+	const port =
+		ship.followingRoute &&
+		ship.followingRoute.route.legs[ship.followingRoute.legIndex].port;
+
+	const speed = ship.blueprint.speed * 2;
+
+	if (port) {
+		let index = port.shipQueue.length + (port.serving ? 1 : 0);
+		const i = port.shipQueue.indexOf(ship);
+		if (i !== -1) {
+			index = i + 1;
+		}
+		if (port.serving?.ship === ship) {
+			index = 0;
+		}
+
+		const portGap = 1;
+		const shipGap = 0.8;
+		const distance = portGap + index * shipGap;
+		const tx = port.position[0] + port.shipQueueDirection[0] * distance;
+		const ty = port.position[1] + port.shipQueueDirection[1] * distance;
+
+		ship.target[0] = tx;
+		ship.target[1] = ty;
+
+		if (
+			Math.abs(tx - ship.position[0]) < speed &&
+			Math.abs(ty - ship.position[1]) < speed
+		) {
+			if (port.serving?.ship !== ship && !port.shipQueue.includes(ship)) {
+				port.shipQueue.push(ship);
+			}
+		}
+	}
 };
 
 function assert(condition: unknown, msg?: string): asserts condition {

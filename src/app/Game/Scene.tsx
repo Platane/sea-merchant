@@ -1,12 +1,12 @@
-import { OrbitControls } from "@react-three/drei";
+import { Html, OrbitControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React from "react";
 import * as THREE from "three";
-import { Port, Ship } from "../../game/type";
+import { Port } from "../../game/type";
 import { arrayEquals } from "../../utils/array";
 import { useGame, useGameSelector } from "./Game";
 import { PortModel } from "./Model/PortModel";
-import { SailBoatModel } from "./Model/SailBoatModel";
+import { Ship } from "./Ship/Ship";
 
 export const Scene = () => (
 	<>
@@ -27,28 +27,6 @@ const Ships = () => {
 	useGameSelector(({ ships }) => ships.map((ship) => ship.id), arrayEquals);
 
 	return ships.map((ship) => <Ship key={ship.id} ship={ship} />);
-};
-
-const Ship = ({ ship }: { ship: Ship }) => {
-	const ref = React.useRef<THREE.Group>(null);
-
-	useFrame(() => {
-		const group = ref.current;
-		if (!group) return;
-
-		group.position.set(ship.position[0], 0, ship.position[1]);
-
-		const angle =
-			-Math.atan2(ship.direction[1], ship.direction[0]) + Math.PI / 2;
-		group.quaternion.identity();
-		group.rotateY(angle);
-	});
-
-	return (
-		<group ref={ref}>
-			<SailBoatModel />
-		</group>
-	);
 };
 
 const Ports = () => {

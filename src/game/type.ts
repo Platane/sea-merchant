@@ -23,6 +23,7 @@ export type Port = {
 	position: Vec2;
 	deals: Deal[];
 	shipQueue: Ship[];
+	shipQueueDirection: Vec2;
 	serving: {
 		ship: Ship;
 		startedDate: Timestamp;
@@ -41,6 +42,7 @@ export type Ship = {
 	blueprint: ShipBluePrint;
 	position: Vec2;
 	direction: Vec2;
+	target: Vec2;
 	cargo: Inventory;
 	followingRoute: { route: Route; legIndex: number } | null;
 };
