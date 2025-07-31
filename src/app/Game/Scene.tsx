@@ -2,60 +2,34 @@ import { OrbitControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React from "react";
 import * as THREE from "three";
-import { Game, ID, Ship } from "../../game/type";
+import { Port, Ship } from "../../game/type";
 import { arrayEquals } from "../../utils/array";
-import { Subscribable } from "../../utils/subscribable";
+import { useGame, useGameSelector } from "./Game";
+import { PortModel } from "./Model/PortModel";
 import { SailBoatModel } from "./Model/SailBoatModel";
 
-export const Scene = ({
-	game,
-	subscribe,
-}: {
-	game: Game;
-	subscribe: Subscribable["subscribe"];
-}) => {
-	return (
-		<>
-			<OrbitControls />
+export const Scene = () => (
+	<>
+		<OrbitControls />
 
-			<ambientLight />
+		<ambientLight />
 
-			<directionalLight position={[0.2, 1, 0.5]} />
+		<directionalLight position={[0.2, 1, 0.5]} />
 
-			<Ships game={game} subscribe={subscribe} />
-		</>
-	);
+		<Ships />
+
+		<Ports />
+	</>
+);
+
+const Ships = () => {
+	const { ships } = useGame();
+	useGameSelector(({ ships }) => ships.map((ship) => ship.id), arrayEquals);
+
+	return ships.map((ship) => <Ship key={ship.id} ship={ship} />);
 };
 
-const Ships = ({
-	game,
-	subscribe,
-}: {
-	game: Game;
-	subscribe: Subscribable["subscribe"];
-}) => {
-	const [_, setIds] = React.useState<ID[]>([]);
-	React.useEffect(
-		() =>
-			subscribe(() => {
-				const ids = game.ships.map((ship) => ship.id);
-				setIds((l) => (arrayEquals(ids, l) ? l : ids));
-			}),
-		[game],
-	);
-
-	return game.ships.map((ship) => (
-		<Ship key={ship.id} ship={ship} game={game} subscribe={subscribe} />
-	));
-};
-
-const Ship = ({
-	ship,
-}: {
-	ship: Ship;
-	game: Game;
-	subscribe: Subscribable["subscribe"];
-}) => {
+const Ship = ({ ship }: { ship: Ship }) => {
 	const ref = React.useRef<THREE.Group>(null);
 
 	useFrame(() => {
@@ -64,7 +38,8 @@ const Ship = ({
 
 		group.position.set(ship.position[0], 0, ship.position[1]);
 
-		const angle = Math.atan2(ship.direction[1], ship.direction[0]);
+		const angle =
+			-Math.atan2(ship.direction[1], ship.direction[0]) + Math.PI / 2;
 		group.quaternion.identity();
 		group.rotateY(angle);
 	});
@@ -72,6 +47,30 @@ const Ship = ({
 	return (
 		<group ref={ref}>
 			<SailBoatModel />
+		</group>
+	);
+};
+
+const Ports = () => {
+	const { ports } = useGame();
+	useGameSelector(({ ports }) => ports.map((port) => port.id), arrayEquals);
+
+	return ports.map((port) => <Port key={port.id} port={port} />);
+};
+
+const Port = ({ port }: { port: Port }) => {
+	const ref = React.useRef<THREE.Group>(null);
+
+	useFrame(() => {
+		const group = ref.current;
+		if (!group) return;
+
+		group.position.set(port.position[0], 0, port.position[1]);
+	});
+
+	return (
+		<group ref={ref}>
+			<PortModel />
 		</group>
 	);
 };

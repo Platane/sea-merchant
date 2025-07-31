@@ -35,6 +35,6 @@ const shipBluePrints: ShipBluePrint[] = [
 	{
 		id: 1 as ID,
 		cargoCapacity: 100,
-		speed: 1,
+		speed: 0.05,
 	},
 ];
