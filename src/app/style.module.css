@@ -4,3 +4,7 @@ body {
 		Century Gothic,
 		sans-serif;
 }
+
+.app {
+	display: flex;
+}
