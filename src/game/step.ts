@@ -1,0 +1,132 @@
+import { Deal, Game, Port, Route, Ship } from "./type";
+
+export const stepGame = (state: Game) => {
+	state.time++;
+
+	for (const port of state.ports) stepPort(port, state);
+
+	for (const ship of state.ships) {
+		stepShipBusiness(ship, state);
+		stepShipMovement(ship, state);
+	}
+};
+
+export const stepPort = (port: Port, state: Game) => {
+	if (!port.serving) {
+		// start serve the next ship in the queue
+		const ship = port.shipQueue.shift();
+		port.serving = ship ? { ship, startedDate: state.time } : null;
+	}
+
+	if (port.serving) {
+		// the port is currently serving a ship
+		const servingSince = state.time - port.serving.startedDate;
+
+		if (servingSince > port.servingDuration) {
+			// time to execute the deal
+
+			const ship = port.serving.ship;
+
+			// free spot for other ships
+			port.serving = null;
+
+			if (!ship.followingRoute) {
+				console.warn("No route found for ship at port");
+				return;
+			}
+
+			const order =
+				ship.followingRoute.route.legs[ship.followingRoute.legIndex];
+
+			nextLeg(ship.followingRoute);
+
+			if (!order) {
+				console.warn("No order found for ship at port");
+				return;
+			}
+
+			if (order.port.id !== port.id) {
+				console.warn("Order is not for this port");
+				return;
+			}
+
+			const deal = port.deals.find(
+				(d) => d.give.resource === order.take && d.take.resource === order.give,
+			);
+
+			if (!deal) {
+				console.warn("No matching deal for the port");
+				return;
+			}
+
+			executeDeal(ship, deal, order, state);
+		}
+	}
+};
+
+const executeDeal = (
+	ship: Ship,
+	deal: Deal,
+	order: { max: number },
+	state: Pick<Game, "resourceWeight" | "resources">,
+) => {
+	const weightDelta =
+		deal.give.amount * state.resourceWeight[deal.give.resource] -
+		deal.take.amount * state.resourceWeight[deal.take.resource];
+
+	const availableSpace =
+		ship.blueprint.cargoCapacity -
+		state.resources.reduce((sum, r) => sum + ship.cargo[r], 0);
+
+	const k = Math.floor(
+		Math.min(
+			order.max,
+			availableSpace / weightDelta,
+			ship.cargo[deal.take.resource] / deal.take.amount,
+		),
+	);
+
+	ship.cargo[deal.give.resource] += k * deal.give.amount;
+	ship.cargo[deal.take.resource] -= k * deal.take.amount;
+};
+
+const nextLeg = (fr: { route: Route; legIndex: number }) => {
+	fr.legIndex = (fr.legIndex + 1) % fr.route.legs.length;
+};
+
+export const stepShipBusiness = (ship: Ship, state: Game) => {};
+
+export const stepShipMovement = (ship: Ship, state: Game) => {
+	const targetPort =
+		ship.followingRoute &&
+		ship.followingRoute.route.legs[ship.followingRoute.legIndex].port;
+
+	if (!targetPort) return;
+
+	const tx = targetPort.position[0];
+	const ty = targetPort.position[1];
+
+	const dx = tx - ship.position[0];
+	const dy = ty - ship.position[1];
+
+	const l = Math.hypot(dx, dy);
+
+	const speed = ship.blueprint.speed;
+
+	if (l < speed) {
+		targetPort.shipQueue.push(ship);
+	}
+
+	const vx = dx / l;
+	const vy = dy / l;
+
+	ship.direction[0] = vx;
+	ship.direction[1] = vy;
+
+	ship.position[0] += vx * speed;
+	ship.position[1] += vy * speed;
+};
+
+function assert(condition: unknown, msg?: string): asserts condition {
+	if (condition === false) throw new Error(msg);
+}
