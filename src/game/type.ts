@@ -29,6 +29,7 @@ export type Port = {
 		startedDate: Timestamp;
 	} | null;
 	servingDuration: number;
+	inventory: Inventory;
 };
 
 export type ShipBluePrint = {
@@ -47,9 +48,26 @@ export type Ship = {
 	followingRoute: { route: Route; legIndex: number } | null;
 };
 
+export enum PortActionType {
+	trade,
+	unload,
+	load,
+}
+
 export type Route = {
 	id: ID;
-	legs: { port: Port; give: Resource; take: Resource; max: number }[];
+	legs: {
+		port: Port;
+		action:
+			| {
+					type: PortActionType.trade;
+					give: Resource;
+					take: Resource;
+					max: number;
+			  }
+			| { type: PortActionType.unload; give: Resource; max: number }
+			| { type: PortActionType.load; give: Resource; max: number };
+	}[];
 };
 
 export type Game = {

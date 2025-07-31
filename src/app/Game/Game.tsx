@@ -2,7 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import React from "react";
 import { createEmptyInventory, createGameState } from "../../game";
 import { stepGame } from "../../game/step";
-import { Game as GameType, ID, Route } from "../../game/type";
+import { Game as GameType, ID, PortActionType, Route } from "../../game/type";
 import { createSubscribable, Subscribable } from "../../utils/subscribable";
 import { BananaModel } from "./Model/BananaModel";
 import { GrapesModel } from "./Model/GrapesModel";
@@ -86,6 +86,7 @@ const createGame = () => {
 			serving: null,
 			servingDuration: 50,
 			shipQueueDirection: [Math.cos(4), Math.sin(4)],
+			inventory: createEmptyInventory(),
 		},
 		{
 			id: 3 as ID,
@@ -100,6 +101,7 @@ const createGame = () => {
 			serving: null,
 			servingDuration: 50,
 			shipQueueDirection: [Math.cos(1), Math.sin(1)],
+			inventory: createEmptyInventory(),
 		},
 		{
 			id: 4 as ID,
@@ -113,7 +115,8 @@ const createGame = () => {
 			shipQueue: [],
 			serving: null,
 			servingDuration: 50,
-			shipQueueDirection: [Math.cos(4), Math.sin(4)],
+			shipQueueDirection: [Math.cos(5), Math.sin(5)],
+			inventory: createEmptyInventory(),
 		},
 	);
 
@@ -122,15 +125,30 @@ const createGame = () => {
 		legs: [
 			{
 				port: game.ports[1],
-				give: game.resources[0],
-				take: game.resources[1],
-				max: 10,
+				action: {
+					type: PortActionType.trade,
+					give: game.resources[0],
+					take: game.resources[1],
+					max: 10,
+				},
 			},
 			{
 				port: game.ports[0],
-				give: game.resources[1],
-				take: game.resources[0],
-				max: 9,
+				action: {
+					type: PortActionType.trade,
+					give: game.resources[1],
+					take: game.resources[0],
+					max: 9,
+				},
+			},
+			{
+				port: game.ports[2],
+				action: {
+					type: PortActionType.trade,
+					give: game.resources[2],
+					take: game.resources[1],
+					max: 0,
+				},
 			},
 		],
 	};

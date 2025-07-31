@@ -1,4 +1,4 @@
-import { Deal, Game, Port, Route, Ship } from "./type";
+import { Deal, Game, Port, PortActionType, Route, Ship } from "./type";
 
 export const stepGame = (state: Game) => {
 	state.time++;
@@ -42,52 +42,60 @@ export const stepPort = (port: Port, state: Game) => {
 
 			if (!order) {
 				console.warn("No order found for ship at port");
+				ship.followingRoute = null;
 				return;
 			}
 
 			if (order.port.id !== port.id) {
 				console.warn("Order is not for this port");
+				ship.followingRoute = null;
 				return;
 			}
 
-			const deal = port.deals.find(
-				(d) => d.give.resource === order.take && d.take.resource === order.give,
-			);
+			// execute the order
+			const action = order.action;
+			if (action.type === PortActionType.trade) {
+				const deal = port.deals.find(
+					(d) =>
+						d.give.resource === action.take && d.take.resource === action.give,
+				);
 
-			if (!deal) {
-				console.warn("No matching deal for the port");
-				return;
+				if (!deal) {
+					console.warn("No matching deal for the port");
+					return;
+				}
+
+				const weightDelta =
+					deal.give.amount * state.resourceWeight[deal.give.resource] -
+					deal.take.amount * state.resourceWeight[deal.take.resource];
+
+				const availableSpace =
+					ship.blueprint.cargoCapacity -
+					state.resources.reduce((sum, r) => sum + ship.cargo[r], 0);
+
+				const k = Math.floor(
+					Math.min(
+						action.max,
+						availableSpace / weightDelta,
+						ship.cargo[deal.take.resource] / deal.take.amount,
+					),
+				);
+
+				ship.cargo[deal.give.resource] += k * deal.give.amount;
+				ship.cargo[deal.take.resource] -= k * deal.take.amount;
 			}
 
-			executeDeal(ship, deal, order, state);
+			if (action.type === PortActionType.unload) {
+				const k = Math.min(ship.cargo[action.give], action.max);
+				ship.cargo[action.give] -= k;
+			}
+			
+			if (action.type === PortActionType.unload) {
+				const k = Math.min(ship.cargo[action.give], action.max);
+				ship.cargo[action.give] -= k;
+			}
 		}
 	}
-};
-
-const executeDeal = (
-	ship: Ship,
-	deal: Deal,
-	order: { max: number },
-	state: Pick<Game, "resourceWeight" | "resources">,
-) => {
-	const weightDelta =
-		deal.give.amount * state.resourceWeight[deal.give.resource] -
-		deal.take.amount * state.resourceWeight[deal.take.resource];
-
-	const availableSpace =
-		ship.blueprint.cargoCapacity -
-		state.resources.reduce((sum, r) => sum + ship.cargo[r], 0);
-
-	const k = Math.floor(
-		Math.min(
-			order.max,
-			availableSpace / weightDelta,
-			ship.cargo[deal.take.resource] / deal.take.amount,
-		),
-	);
-
-	ship.cargo[deal.give.resource] += k * deal.give.amount;
-	ship.cargo[deal.take.resource] -= k * deal.take.amount;
 };
 
 const nextLeg = (fr: { route: Route; legIndex: number }) => {
