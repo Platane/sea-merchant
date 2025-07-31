@@ -1,3 +1,6 @@
-console.log("hello");
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { App } from "./app/App";
 
-const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+const root = createRoot(document.body);
+root.render(React.createElement(App));

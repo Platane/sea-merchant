@@ -6,7 +6,10 @@
 		"noEmit": true,
 		"lib": ["ES2024", "DOM"],
 		"allowSyntheticDefaultImports": true,
-		"types": ["vite/client"]
+		"types": ["vite/client"],
+		"jsx": "preserve",
+		"strict": true,
+		"plugins": [{ "name": "typescript-plugin-css-modules" }]
 	},
 	"exclude": ["node_modules"]
 }
