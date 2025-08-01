@@ -4,8 +4,9 @@ import React from "react";
 import * as THREE from "three";
 import { Ship as ShipType } from "../../../game/type";
 import { arrayEquals } from "../../../utils/array";
-import { useGame, useGameSelector } from "../Game";
 import { SailBoatModel } from "../Model/SailBoatModel";
+import { SelectionRingModel } from "../Model/SelectionRingModel";
+import { useGame, useGameSelector, useUserState, useUserStore } from "../state";
 import { resourceColors, resourceModels } from "../theme";
 import styles from "./style.module.css";
 
@@ -23,6 +24,10 @@ export const Ship = ({ ship }: { ship: ShipType }) => {
 		group.quaternion.identity();
 		group.rotateY(angle);
 	});
+
+	const userStore = useUserStore();
+
+	const selected = useUserState((s) => s.selectedId === ship.id);
 
 	const [hover, setHover] = React.useState(false);
 
@@ -57,17 +62,19 @@ export const Ship = ({ ship }: { ship: ShipType }) => {
 			ref={ref}
 			onPointerEnter={() => setHover(true)}
 			onPointerLeave={() => setHover(false)}
+			onPointerDown={() => userStore.setState({ selectedId: ship.id })}
 		>
 			<mesh
 				geometry={capsuleGeometry}
 				material={capsuleMaterial}
 				scale={[0.8, 1, 1.5]}
-				position={[0, 0.2, 0]}
+				position={[0, 0.32, 0]}
 				visible={false}
 			/>
 			<SailBoatModel />
 			{cargoItems}
-			{hover && <ShipOverlay ship={ship} />}
+			{(hover || selected) && <ShipOverlay ship={ship} />}
+			{selected && <SelectionRingModel scale={[0.6, 0.6, 0.6]} />}
 		</group>
 	);
 };

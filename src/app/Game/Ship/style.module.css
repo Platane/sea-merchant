@@ -3,7 +3,7 @@
 	width: 100px;
 	height: 24px;
 	position: absolute;
-	top: 0;
+	top: -30px;
 	left: 0;
 	transform: translate(-50%, -100%);
 	display: flex;

@@ -34,7 +34,8 @@ const resourceWeight = {
 const shipBluePrints: ShipBluePrint[] = [
 	{
 		id: 1 as ID,
-		cargoCapacity: 100,
+		name: "Light Saiyajin",
+		cargoCapacity: 20,
 		speed: 0.05,
 	},
 ];

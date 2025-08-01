@@ -1,193 +1,46 @@
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import React from "react";
-import { createEmptyInventory, createGameState } from "../../game";
+import { createGameState } from "../../game";
+import { addShip, initializeGame } from "../../game/initialize";
 import { stepGame } from "../../game/step";
-import { Game as GameType, ID, PortActionType, Route } from "../../game/type";
-import { createSubscribable, Subscribable } from "../../utils/subscribable";
-import { BananaModel } from "./Model/BananaModel";
-import { GrapesModel } from "./Model/GrapesModel";
-import { PortModel } from "./Model/PortModel";
-import { PumpkinModel } from "./Model/PumpkinModel";
-import { SailBoatModel } from "./Model/SailBoatModel";
+import { createSubscribable } from "../../utils/subscribable";
 import { Scene } from "./Scene";
+import { createUserStore, GameContext, UserContext, useGame } from "./state";
 import styles from "./style.module.css";
 import { Ui } from "./Ui";
 
 export const Game = () => {
-	const [game] = React.useState(createGame);
+	const [game] = React.useState(() => {
+		const game = createGameState();
+		initializeGame(game);
+		return game;
+	});
 	const [{ subscribe, dispatch }] = React.useState(createSubscribable);
-
-	React.useEffect(() => {
-		const loop = () => {
-			stepGame(game);
-			dispatch();
-			r = requestAnimationFrame(loop);
-		};
-		let r = requestAnimationFrame(loop);
-		return () => cancelAnimationFrame(r);
-	}, [game]);
-
-	const addShip = () => {
-		const a = Math.random() * Math.PI * 2;
-		game.ships.push({
-			id: (game.ships.length + 1) as ID,
-			blueprint: game.shipBluePrints[0],
-			position: [Math.random() * 4 - 2, Math.random() * 4 - 2],
-			direction: [Math.cos(a), Math.sin(a)],
-			target: [0, 0],
-			cargo: {
-				...createEmptyInventory(),
-				[game.resources[0]]: 60,
-				[game.resources[2]]: 30,
-			},
-			followingRoute: {
-				route: game.ships[0].followingRoute!.route,
-				legIndex: 1,
-			},
-		});
-
-		dispatch();
-	};
+	const [userStore] = React.useState(createUserStore);
 
 	return (
 		<GameContext.Provider value={{ game, subscribe }}>
-			<Ui addShip={addShip} />
-			<Canvas
-				className={styles.canvasContainer}
-				camera={{ position: [1, 16, 6] }}
-			>
-				<React.Suspense>
-					<SailBoatModel visible={false} />
-					<PortModel visible={false} />
-					<BananaModel visible={false} />
-					<GrapesModel visible={false} />
-					<PumpkinModel visible={false} />
-					<Scene />
-				</React.Suspense>
-			</Canvas>
+			<UserContext.Provider value={userStore}>
+				<Ui addShip={() => addShip(game)} />
+				<Canvas
+					className={styles.canvasContainer}
+					camera={{ position: [1, 16, 6] }}
+				>
+					<React.Suspense>
+						<Scheduler afterUpdate={dispatch} />
+						<Scene />
+					</React.Suspense>
+				</Canvas>
+			</UserContext.Provider>
 		</GameContext.Provider>
 	);
 };
 
-const createGame = () => {
-	const game = createGameState();
-
-	game.ports.push(
-		{
-			id: 2 as ID,
-			position: [7, 5],
-			deals: [
-				{
-					give: { amount: 1, resource: game.resources[0] },
-					take: { amount: 1, resource: game.resources[1] },
-				},
-			],
-			shipQueue: [],
-			serving: null,
-			servingDuration: 50,
-			shipQueueDirection: [Math.cos(4), Math.sin(4)],
-			inventory: createEmptyInventory(),
-		},
-		{
-			id: 3 as ID,
-			position: [-6, 2],
-			deals: [
-				{
-					give: { amount: 1, resource: game.resources[1] },
-					take: { amount: 1, resource: game.resources[0] },
-				},
-			],
-			shipQueue: [],
-			serving: null,
-			servingDuration: 50,
-			shipQueueDirection: [Math.cos(1), Math.sin(1)],
-			inventory: createEmptyInventory(),
-		},
-		{
-			id: 4 as ID,
-			position: [2, 8],
-			deals: [
-				{
-					give: { amount: 2, resource: game.resources[1] },
-					take: { amount: 1, resource: game.resources[2] },
-				},
-			],
-			shipQueue: [],
-			serving: null,
-			servingDuration: 50,
-			shipQueueDirection: [Math.cos(5), Math.sin(5)],
-			inventory: createEmptyInventory(),
-		},
-	);
-
-	const route: Route = {
-		id: 2 as ID,
-		legs: [
-			{
-				port: game.ports[1],
-				action: {
-					type: PortActionType.trade,
-					give: game.resources[0],
-					take: game.resources[1],
-					max: 10,
-				},
-			},
-			{
-				port: game.ports[0],
-				action: {
-					type: PortActionType.trade,
-					give: game.resources[1],
-					take: game.resources[0],
-					max: 9,
-				},
-			},
-			{
-				port: game.ports[2],
-				action: {
-					type: PortActionType.trade,
-					give: game.resources[2],
-					take: game.resources[1],
-					max: 0,
-				},
-			},
-		],
-	};
-
-	game.ships.push({
-		id: (game.ships.length + 1) as ID,
-		blueprint: game.shipBluePrints[0],
-		position: [game.ships.length, 0],
-		direction: [1, 0],
-		target: [0, 0],
-		cargo: { ...createEmptyInventory(), [game.resources[0]]: 60 },
-		followingRoute: { route, legIndex: 0 },
+const Scheduler = ({ afterUpdate }: { afterUpdate: () => void }) => {
+	const game = useGame();
+	useFrame(() => {
+		stepGame(game);
+		afterUpdate();
 	});
-
-	return game;
-};
-
-const GameContext = React.createContext<{
-	game: GameType;
-	subscribe: Subscribable["subscribe"];
-}>(null as any);
-
-export const useGame = () => React.useContext(GameContext).game;
-
-export const useGameSelector = <T,>(
-	selector: (game: GameType) => T,
-	equal: (a: T, b: T) => boolean = (a, b) => a === b,
-) => {
-	const { game, subscribe } = React.useContext(GameContext);
-	const [value, setValue] = React.useState(selector(game));
-	React.useEffect(
-		() =>
-			subscribe(() =>
-				setValue((prevValue) => {
-					const newValue = selector(game);
-					return equal(newValue, prevValue) ? prevValue : newValue;
-				}),
-			),
-		[game],
-	);
-	return value;
+	return null;
 };

@@ -6,7 +6,8 @@
 		"@react-three/fiber": "9.3.0",
 		"react": "19.1.1",
 		"react-dom": "19.1.1",
-		"three": "0.178.0"
+		"three": "0.178.0",
+		"zustand": "5.0.7"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.1.3",

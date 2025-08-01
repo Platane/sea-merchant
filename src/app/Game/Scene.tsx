@@ -1,12 +1,10 @@
-import { Html, OrbitControls } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 import React from "react";
 import * as THREE from "three";
-import { Port } from "../../game/type";
 import { arrayEquals } from "../../utils/array";
-import { useGame, useGameSelector } from "./Game";
-import { PortModel } from "./Model/PortModel";
+import { Port } from "./Port/Port";
 import { Ship } from "./Ship/Ship";
+import { useGame, useGameSelector } from "./state";
 
 export const Scene = () => (
 	<>
@@ -19,8 +17,23 @@ export const Scene = () => (
 		<Ships />
 
 		<Ports />
+
+		<Ground />
 	</>
 );
+
+const Ground = () => {
+	return (
+		<mesh
+			scale={[25, 25, 25]}
+			rotation={[-Math.PI / 2, 0, 0]}
+			onPointerMove={(e) => console.log(e.point.x, e.point.z)}
+		>
+			<planeGeometry args={[1, 1]} />
+			<meshStandardMaterial color="#eee" />
+		</mesh>
+	);
+};
 
 const Ships = () => {
 	const { ships } = useGame();
@@ -34,21 +47,4 @@ const Ports = () => {
 	useGameSelector(({ ports }) => ports.map((port) => port.id), arrayEquals);
 
 	return ports.map((port) => <Port key={port.id} port={port} />);
-};
-
-const Port = ({ port }: { port: Port }) => {
-	const ref = React.useRef<THREE.Group>(null);
-
-	useFrame(() => {
-		const group = ref.current;
-		if (!group) return;
-
-		group.position.set(port.position[0], 0, port.position[1]);
-	});
-
-	return (
-		<group ref={ref}>
-			<PortModel />
-		</group>
-	);
 };

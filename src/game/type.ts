@@ -20,6 +20,7 @@ export type Deal = {
 
 export type Port = {
 	id: ID;
+	name: string;
 	position: Vec2;
 	deals: Deal[];
 	shipQueue: Ship[];
@@ -34,12 +35,14 @@ export type Port = {
 
 export type ShipBluePrint = {
 	id: ID;
+	name: string;
 	cargoCapacity: Amount;
 	speed: number;
 };
 
 export type Ship = {
 	id: ID;
+	name: string;
 	blueprint: ShipBluePrint;
 	position: Vec2;
 	direction: Vec2;
