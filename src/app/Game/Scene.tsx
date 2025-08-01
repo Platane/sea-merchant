@@ -2,13 +2,15 @@ import { OrbitControls } from "@react-three/drei";
 import React from "react";
 import * as THREE from "three";
 import { arrayEquals } from "../../utils/array";
+import { useGame, useSelector, useStore } from "./appState/hook";
+import { Camera } from "./Camera";
 import { Port } from "./Port/Port";
 import { Ship } from "./Ship/Ship";
-import { useGame, useGameSelector } from "./state";
 
 export const Scene = () => (
 	<>
-		<OrbitControls />
+		{/*<OrbitControls />*/}
+		<Camera />
 
 		<ambientLight />
 
@@ -23,11 +25,16 @@ export const Scene = () => (
 );
 
 const Ground = () => {
+	const { onGroundPointerDown, onGroundPointerMove, onGroundPointerUp } =
+		useStore();
+
 	return (
 		<mesh
 			scale={[25, 25, 25]}
 			rotation={[-Math.PI / 2, 0, 0]}
-			onPointerMove={(e) => console.log(e.point.x, e.point.z)}
+			onPointerDown={(e) => onGroundPointerDown([e.point.x, e.point.z])}
+			onPointerMove={(e) => onGroundPointerMove([e.point.x, e.point.z])}
+			onPointerUp={(e) => onGroundPointerUp([e.point.x, e.point.z])}
 		>
 			<planeGeometry args={[1, 1]} />
 			<meshStandardMaterial color="#eee" />
@@ -37,14 +44,14 @@ const Ground = () => {
 
 const Ships = () => {
 	const { ships } = useGame();
-	useGameSelector(({ ships }) => ships.map((ship) => ship.id), arrayEquals);
+	useSelector(({ game }) => game.ships.map((ship) => ship.id), arrayEquals);
 
 	return ships.map((ship) => <Ship key={ship.id} ship={ship} />);
 };
 
 const Ports = () => {
 	const { ports } = useGame();
-	useGameSelector(({ ports }) => ports.map((port) => port.id), arrayEquals);
+	useSelector(({ game }) => game.ports.map((port) => port.id), arrayEquals);
 
 	return ports.map((port) => <Port key={port.id} port={port} />);
 };

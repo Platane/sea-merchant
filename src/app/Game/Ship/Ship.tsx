@@ -4,9 +4,9 @@ import React from "react";
 import * as THREE from "three";
 import { Ship as ShipType } from "../../../game/type";
 import { arrayEquals } from "../../../utils/array";
+import { useGame, useSelector, useStore } from "../appState/hook";
 import { SailBoatModel } from "../Model/SailBoatModel";
 import { SelectionRingModel } from "../Model/SelectionRingModel";
-import { useGame, useGameSelector, useUserState, useUserStore } from "../state";
 import { resourceColors, resourceModels } from "../theme";
 import styles from "./style.module.css";
 
@@ -25,15 +25,66 @@ export const Ship = ({ ship }: { ship: ShipType }) => {
 		group.rotateY(angle);
 	});
 
-	const userStore = useUserStore();
-
-	const selected = useUserState((s) => s.selectedId === ship.id);
+	const selected = useSelector(
+		({ selectedShipId }) => selectedShipId === ship.id,
+	);
 
 	const [hover, setHover] = React.useState(false);
 
-	useGameSelector(() => Object.values(ship.cargo), arrayEquals);
-	const { resources } = useGame();
+	useSelector(() => Object.values(ship.cargo), arrayEquals);
 
+	const { onShipPointerDown } = useStore();
+
+	return (
+		<group
+			ref={ref}
+			onPointerEnter={() => setHover(true)}
+			onPointerLeave={() => setHover(false)}
+			onPointerDown={() => onShipPointerDown(ship.id)}
+		>
+			<mesh
+				geometry={capsuleGeometry}
+				material={capsuleMaterial}
+				scale={[0.8, 1, 1.5]}
+				position={[0, 0.32, 0]}
+				visible={false}
+			/>
+			<SailBoatModel />
+			<Cargo ship={ship} />
+			{(hover || selected) && <ShipOverlay ship={ship} />}
+			{selected && <SelectionRingModel scale={[0.6, 0.6, 0.6]} />}
+		</group>
+	);
+};
+
+const capsuleGeometry = new THREE.SphereGeometry(0.5, 10, 10);
+const capsuleMaterial = new THREE.MeshBasicMaterial();
+
+const ShipOverlay = ({ ship }: { ship: ShipType }) => {
+	const { resources } = useGame();
+	const total = ship.blueprint.cargoCapacity;
+
+	return (
+		<Html position={[0, 0.3, 0]} className={styles.overlay}>
+			<div className={styles.cargoContainer}>
+				{resources.map((r) => (
+					<div
+						key={r}
+						style={
+							{
+								width: (ship.cargo[r] / total) * 100 + "%",
+								"--color": resourceColors[r],
+							} as any
+						}
+					/>
+				))}
+			</div>
+		</Html>
+	);
+};
+
+const Cargo = ({ ship }: { ship: ShipType }) => {
+	const { resources } = useGame();
 	const cargoItems: React.ReactElement[] = [];
 	for (const r of resources) {
 		const Model = resourceModels[r];
@@ -57,51 +108,5 @@ export const Ship = ({ ship }: { ship: ShipType }) => {
 		}
 	}
 
-	return (
-		<group
-			ref={ref}
-			onPointerEnter={() => setHover(true)}
-			onPointerLeave={() => setHover(false)}
-			onPointerDown={() => userStore.setState({ selectedId: ship.id })}
-		>
-			<mesh
-				geometry={capsuleGeometry}
-				material={capsuleMaterial}
-				scale={[0.8, 1, 1.5]}
-				position={[0, 0.32, 0]}
-				visible={false}
-			/>
-			<SailBoatModel />
-			{cargoItems}
-			{(hover || selected) && <ShipOverlay ship={ship} />}
-			{selected && <SelectionRingModel scale={[0.6, 0.6, 0.6]} />}
-		</group>
-	);
-};
-
-const capsuleGeometry = new THREE.SphereGeometry(0.5, 10, 10);
-const capsuleMaterial = new THREE.MeshBasicMaterial();
-
-const ShipOverlay = ({ ship }: { ship: ShipType }) => {
-	// useGameSelector(() => Object.values(ship.cargo), arrayEquals);
-	const { resources } = useGame();
-	const total = ship.blueprint.cargoCapacity;
-
-	return (
-		<Html position={[0, 0.3, 0]} className={styles.overlay}>
-			<div className={styles.cargoContainer}>
-				{resources.map((r) => (
-					<div
-						key={r}
-						style={
-							{
-								width: (ship.cargo[r] / total) * 100 + "%",
-								"--color": resourceColors[r],
-							} as any
-						}
-					/>
-				))}
-			</div>
-		</Html>
-	);
+	return cargoItems;
 };

@@ -1,16 +1,18 @@
-import { useFrame } from "@react-three/fiber";
 import React from "react";
 import * as THREE from "three";
 import { Port as PortType } from "../../../game/type";
+import { useSelector, useStore } from "../appState/hook";
 import { PortModel } from "../Model/PortModel";
-import { useUserState, useUserStore } from "../state";
+import { SelectionRingModel } from "../Model/SelectionRingModel";
 
 export const Port = ({ port }: { port: PortType }) => {
 	const ref = React.useRef<THREE.Group>(null);
 
-	const userStore = useUserStore();
+	const { onPortPointerDown } = useStore();
 
-	const selected = useUserState((s) => s.selectedId === port.id);
+	const selected = useSelector(
+		({ selectedPortId }) => selectedPortId === port.id,
+	);
 
 	// useFrame(() => {
 	// 	const group = ref.current;
@@ -22,9 +24,10 @@ export const Port = ({ port }: { port: PortType }) => {
 		<group
 			ref={ref}
 			position={[port.position[0], 0, port.position[1]]}
-			onPointerDown={() => userStore.setState({ selectedId: port.id })}
+			onPointerDown={() => onPortPointerDown(port.id)}
 		>
 			<PortModel />
+			{selected && <SelectionRingModel scale={[0.8, 0.8, 0.8]} />}
 		</group>
 	);
 };

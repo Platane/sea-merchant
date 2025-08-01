@@ -1,9 +1,9 @@
 import React from "react";
-import { useGame, useGameSelector, useUserState } from "./state";
+import { useSelector } from "./appState/hook";
 import styles from "./style.module.css";
 
 export const Ui = ({ addShip }: { addShip: () => void }) => {
-	const shipCount = useGameSelector((game) => game.ships.length);
+	const shipCount = useSelector(({ game }) => game.ships.length);
 
 	return (
 		<div className={styles.uiContainer}>
@@ -15,11 +15,12 @@ export const Ui = ({ addShip }: { addShip: () => void }) => {
 };
 
 const Selection = () => {
-	const selectedId = useUserState((s) => s.selectedId);
-	const game = useGame();
-
-	const port = game.ports.find((port) => port.id === selectedId);
-	const ship = game.ships.find((ship) => ship.id === selectedId);
+	const port = useSelector((state) =>
+		state.game.ports.find((port) => port.id === state.selectedPortId),
+	);
+	const ship = useSelector((state) =>
+		state.game.ships.find((ship) => ship.id === state.selectedShipId),
+	);
 
 	if (port) return <div>port: {port.name}</div>;
 	if (ship) return <div>ship: {ship.name}</div>;
