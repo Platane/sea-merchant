@@ -17,20 +17,13 @@ jobs:
 
       - run: bunx tsc
 
-      # build and deploy the github pages version
-
-      - run: bunx vite build src --base /sea-merchant --outDir ../dist
+      - run: bunx vite build src --base ./ --outDir ../dist
 
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
       - uses: actions/deploy-pages@v4
-
-
-      # build and upload the standalone version
-
-      - run: bunx vite build src --base / --outDir ../dist --emptyOutDir
 
       - uses: actions/upload-artifact@v4
         with:
