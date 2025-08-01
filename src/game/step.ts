@@ -1,4 +1,12 @@
-import { Deal, Game, Port, PortActionType, Route, Ship } from "./type";
+import {
+	Deal,
+	Game,
+	Port,
+	PortActionType,
+	Route,
+	Ship,
+	Timestamp,
+} from "./type";
 
 export const stepGame = (state: Game) => {
 	state.time++;
@@ -89,11 +97,20 @@ export const stepPort = (port: Port, state: Game) => {
 				const k = Math.min(ship.cargo[action.give], action.max);
 				ship.cargo[action.give] -= k;
 			}
-			
-			if (action.type === PortActionType.unload) {
-				const k = Math.min(ship.cargo[action.give], action.max);
-				ship.cargo[action.give] -= k;
+
+			if (action.type === PortActionType.load) {
+				const availableSpace =
+					ship.blueprint.cargoCapacity -
+					state.resources.reduce((sum, r) => sum + ship.cargo[r], 0);
+				const k = Math.min(availableSpace, action.max);
+				ship.cargo[action.give] += k;
 			}
+
+			// continue serving if more action are on this port
+			const nextPort =
+				ship.followingRoute.route.legs[ship.followingRoute.legIndex].port;
+			if (nextPort.id === port.id)
+				port.serving = { ship: ship, startedDate: 0 as Timestamp };
 		}
 	}
 };

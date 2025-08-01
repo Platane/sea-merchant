@@ -84,6 +84,14 @@ export const initializeGame = (game: Game) => {
 					max: 0,
 				},
 			},
+			{
+				port: game.ports[2],
+				action: {
+					type: PortActionType.unload,
+					give: game.resources[2],
+					max: 0,
+				},
+			},
 		],
 	};
 
