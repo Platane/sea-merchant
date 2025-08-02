@@ -1,0 +1,37 @@
+.container {
+	background-color: #eee;
+	border: solid 2px #333;
+	border-radius: 4px;
+	padding: 8px;
+	min-width: 200px;
+
+	position: absolute;
+	top: calc(50% - 10px);
+	left: 50%;
+	transform: translate(-50%, -100%);
+	pointer-events: none;
+}
+.name {
+	margin: 0;
+	font-size: 28px;
+}
+.dealList {
+}
+.dealItem {
+	display: flex;
+	flex-direction: row;
+	justify-items: center;
+	align-items: center;
+}
+.dealResourceIcon {
+	width: 32px;
+	height: 32px;
+}
+.dealArrow {
+	display: inline-block;
+	margin: 0 4px;
+}
+.dealQuantity {
+	font-size: 22px;
+	font-family: monospace;
+}

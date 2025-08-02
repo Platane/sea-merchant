@@ -81,11 +81,14 @@ export const stepPort = (port: Port, state: Game) => {
 					ship.blueprint.cargoCapacity -
 					state.resources.reduce((sum, r) => sum + ship.cargo[r], 0);
 
-				const k = Math.floor(
-					Math.min(
-						action.max,
-						availableSpace / weightDelta,
-						ship.cargo[deal.take.resource] / deal.take.amount,
+				const k = Math.min(
+					action.max,
+					Math.floor(
+						Math.max(
+							0,
+							availableSpace / weightDelta,
+							ship.cargo[deal.take.resource] / deal.take.amount,
+						),
 					),
 				);
 

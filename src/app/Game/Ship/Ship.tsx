@@ -91,7 +91,7 @@ const Cargo = ({ ship }: { ship: ShipType }) => {
 	const cargoItems: React.ReactElement[] = [];
 	for (const r of resources) {
 		const Model = resourceModels[r];
-		for (let k = ship.cargo[r]; k--; ) {
+		for (let k = 0; k < ship.cargo[r]; k++) {
 			const i = cargoItems.length;
 			const x = i % 3;
 			const z = Math.floor(i / 3) % 5;

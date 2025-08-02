@@ -13,6 +13,7 @@ export const createGameState = (): Game => {
 		// >,
 		resources,
 		resourceWeight,
+		mainPort: null as any,
 	};
 };
 
@@ -23,12 +24,13 @@ export const createEmptyInventory = (): Record<Resource, number> => {
 	>;
 };
 
-const resources = [1, 2, 3] as Resource[];
+const resources = [1, 2, 3, 4] as Resource[];
 
 const resourceWeight = {
-	1: 1,
+	1: 0,
 	2: 1,
 	3: 2,
+	4: 1,
 } as Record<Resource, number>;
 
 const shipBluePrints: ShipBluePrint[] = [
@@ -36,6 +38,6 @@ const shipBluePrints: ShipBluePrint[] = [
 		id: 1 as ID,
 		name: "Light Saiyajin",
 		cargoCapacity: 20,
-		speed: 0.05,
+		speed: 0.02,
 	},
 ];

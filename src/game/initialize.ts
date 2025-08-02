@@ -14,6 +14,7 @@ export const initializeGame = (game: Game) => {
 					take: { amount: 1, resource: game.resources[1] },
 				},
 			],
+			futureDeals: [],
 			shipQueue: [],
 			serving: null,
 			servingDuration: 50,
@@ -30,6 +31,7 @@ export const initializeGame = (game: Game) => {
 					take: { amount: 1, resource: game.resources[0] },
 				},
 			],
+			futureDeals: [],
 			shipQueue: [],
 			serving: null,
 			servingDuration: 50,
@@ -47,6 +49,8 @@ export const initializeGame = (game: Game) => {
 				},
 			],
 			shipQueue: [],
+			futureDeals: [],
+
 			serving: null,
 			servingDuration: 50,
 			shipQueueDirection: [Math.cos(5), Math.sin(5)],
@@ -54,21 +58,25 @@ export const initializeGame = (game: Game) => {
 		},
 		{
 			id: generateID(),
-			name: "Ruin",
+			name: "Ruinifar",
 			position: [-3, -6],
 			deals: [
 				{
 					give: { amount: 2, resource: game.resources[1] },
-					take: { amount: 1, resource: game.resources[2] },
+					take: { amount: 5, resource: game.resources[2] },
 				},
 			],
 			shipQueue: [],
+			futureDeals: [],
+
 			serving: null,
 			servingDuration: 50,
 			shipQueueDirection: [Math.cos(-5), Math.sin(-5)],
 			inventory: createEmptyInventory(),
 		},
 	);
+
+	game.mainPort = game.ports[3];
 
 	const route: Route = {
 		id: generateID(),

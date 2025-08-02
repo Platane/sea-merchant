@@ -32,6 +32,7 @@ export type Port = {
 	} | null;
 	servingDuration: number;
 	inventory: Inventory;
+	futureDeals: { deals: Deal[]; date: Timestamp }[];
 };
 
 export type ShipBluePrint = {
@@ -84,6 +85,7 @@ export type Game = {
 	routes: Route[];
 	resourceWeight: Record<Resource, number>;
 	resources: Resource[];
+	mainPort: Port;
 };
 
 export type Inventory = Record<Resource, Amount>;

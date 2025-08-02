@@ -10,20 +10,24 @@ export const BananaModel = (props: React.ComponentProps<"group">) => {
 
 	return (
 		<group {...props} dispose={null}>
-			<mesh
-				castShadow
-				receiveShadow
-				geometry={nodes.pasted__pCube11_group_1.geometry}
-				material={materials.blinn10SG}
-				scale={[0.005, 0.005, 0.005]}
-			/>
-			<mesh
-				castShadow
-				receiveShadow
-				geometry={nodes.pasted__pCube11_group_1_1.geometry}
-				material={materials.blinn2SG}
-				scale={[0.005, 0.005, 0.005]}
-			/>
+			<group
+				scale={[0.004, 0.004, 0.004]}
+				rotation={[0, Math.PI / 2, 0]}
+				position={[-0.05, -0.02, 0]}
+			>
+				<mesh
+					castShadow
+					receiveShadow
+					geometry={nodes.pasted__pCube11_group_1.geometry}
+					material={materials.blinn10SG}
+				/>
+				<mesh
+					castShadow
+					receiveShadow
+					geometry={nodes.pasted__pCube11_group_1_1.geometry}
+					material={materials.blinn2SG}
+				/>
+			</group>
 		</group>
 	);
 };

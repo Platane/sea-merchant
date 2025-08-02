@@ -15,7 +15,7 @@ export const PumpkinModel = (props: React.ComponentProps<"group">) => {
 				receiveShadow
 				geometry={nodes.pumpkin.geometry}
 				material={materials.None}
-				scale={[0.3, 0.3, 0.3]}
+				scale={[0.26, 0.26, 0.26]}
 			/>
 		</group>
 	);

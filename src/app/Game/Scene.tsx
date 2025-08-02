@@ -4,6 +4,8 @@ import * as THREE from "three";
 import { arrayEquals } from "../../utils/array";
 import { useGame, useSelector, useStore } from "./appState/hook";
 import { Camera } from "./Camera";
+import { CoinModel } from "./Model/CoinModel";
+import { PumpkinModel } from "./Model/PumpkinModel";
 import { Port } from "./Port/Port";
 import { Ship } from "./Ship/Ship";
 
@@ -12,15 +14,20 @@ export const Scene = () => (
 		{/*<OrbitControls />*/}
 		<Camera />
 
-		<ambientLight />
-
-		<directionalLight position={[0.2, 1, 0.5]} />
+		<LightRig />
 
 		<Ships />
 
 		<Ports />
 
 		<Ground />
+	</>
+);
+
+export const LightRig = () => (
+	<>
+		<ambientLight intensity={1.6} />
+		<directionalLight position={[0.2, 1, 0.5]} />
 	</>
 );
 
@@ -37,7 +44,7 @@ const Ground = () => {
 			onPointerUp={(e) => onGroundPointerUp([e.point.x, e.point.z])}
 		>
 			<planeGeometry args={[1, 1]} />
-			<meshStandardMaterial color="#eee" />
+			<meshStandardMaterial color="#5075e2" />
 		</mesh>
 	);
 };
