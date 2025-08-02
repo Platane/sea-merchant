@@ -11,8 +11,8 @@ import { Ship } from "./Ship/Ship";
 
 export const Scene = () => (
 	<>
-		{/*<OrbitControls />*/}
-		<Camera />
+		<OrbitControls />
+		{/*<Camera />*/}
 
 		<LightRig />
 

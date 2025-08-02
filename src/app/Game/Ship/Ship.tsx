@@ -7,6 +7,7 @@ import { arrayEquals } from "../../../utils/array";
 import { useGame, useSelector, useStore } from "../appState/hook";
 import { SailBoatModel } from "../Model/SailBoatModel";
 import { SelectionRingModel } from "../Model/SelectionRingModel";
+import { Route } from "../Route/Route";
 import { resourceColors, resourceModels } from "../theme";
 import styles from "./style.module.css";
 
@@ -36,27 +37,32 @@ export const Ship = ({ ship }: { ship: ShipType }) => {
 	const { onShipPointerDown } = useStore();
 
 	return (
-		<group
-			ref={ref}
-			onPointerEnter={() => setHover(true)}
-			onPointerLeave={() => setHover(false)}
-			onPointerDown={(e) => {
-				e.stopPropagation();
-				onShipPointerDown(ship.id);
-			}}
-		>
-			<mesh
-				geometry={capsuleGeometry}
-				material={capsuleMaterial}
-				scale={[0.8, 1, 1.5]}
-				position={[0, 0.32, 0]}
-				visible={false}
-			/>
-			<SailBoatModel />
-			<Cargo ship={ship} />
-			{(hover || selected) && <ShipOverlay ship={ship} />}
-			{selected && <SelectionRingModel scale={[0.6, 0.6, 0.6]} />}
-		</group>
+		<>
+			{ship.followingRoute && (
+				<Route route={ship.followingRoute.route} color="orange" />
+			)}
+			<group
+				ref={ref}
+				onPointerEnter={() => setHover(true)}
+				onPointerLeave={() => setHover(false)}
+				onPointerDown={(e) => {
+					e.stopPropagation();
+					onShipPointerDown(ship.id);
+				}}
+			>
+				<mesh
+					geometry={capsuleGeometry}
+					material={capsuleMaterial}
+					scale={[0.8, 1, 1.5]}
+					position={[0, 0.32, 0]}
+					visible={false}
+				/>
+				<SailBoatModel />
+				<Cargo ship={ship} />
+				{(hover || selected) && <ShipOverlay ship={ship} />}
+				{selected && <SelectionRingModel scale={[0.6, 0.6, 0.6]} />}
+			</group>
+		</>
 	);
 };
 
