@@ -4,8 +4,6 @@ import * as THREE from "three";
 import { arrayEquals } from "../../utils/array";
 import { useGame, useSelector, useStore } from "./appState/hook";
 import { Camera } from "./Camera";
-import { CoinModel } from "./Model/CoinModel";
-import { PumpkinModel } from "./Model/PumpkinModel";
 import { Port } from "./Port/Port";
 import { Ship } from "./Ship/Ship";
 

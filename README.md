@@ -15,5 +15,8 @@ bunx vite src
 # Attribution
 
 - Models
+  - Green Pepper by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/5d6zv4Ow2tO)
+  - Eggplant by Poly by Google [CC-BY](https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/6n0KjSnXrRT)
+  - Boat by Quaternius (https://poly.pizza/m/OknDJkGeJ8)
   - Sail Boat by Quaternius (https://poly.pizza/m/BgSZXwmm7k)
   - Coin by Quaternius (https://poly.pizza/m/QHZtj94fvh)

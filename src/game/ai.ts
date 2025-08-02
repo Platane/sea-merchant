@@ -33,8 +33,6 @@ const getRoutePlan = (
 
 	routes.sort((a, b) => score(b) - score(a));
 
-	console.log(routes);
-
 	const route = routes[0];
 
 	if (route) return { legs: route.legs, id: generateID() };
@@ -88,6 +86,7 @@ export const listProfitableRoutes = (
 		const o = openList.shift()!;
 
 		// try to dump
+
 		const value = getInventoryValue(o.inventory);
 		if (value > initialInvestment) {
 			const legs = o.legs.slice();

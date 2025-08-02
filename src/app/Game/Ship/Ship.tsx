@@ -6,7 +6,7 @@ import { Ship as ShipType } from "../../../game/type";
 import { arrayEquals } from "../../../utils/array";
 import { useGame, useSelector, useStore } from "../appState/hook";
 import { ResourceIcon } from "../Icon/ResourceIcon";
-import { SailBoatModel } from "../Model/SailBoatModel";
+import { BoatModel } from "../Model/BoatModel";
 import { SelectionRingModel } from "../Model/SelectionRingModel";
 import { Route } from "../Route/Route";
 import { resourceColors, resourceModels } from "../theme";
@@ -58,7 +58,7 @@ export const Ship = ({ ship }: { ship: ShipType }) => {
 					position={[0, 0.32, 0]}
 					visible={false}
 				/>
-				<SailBoatModel />
+				<BoatModel />
 				<Cargo ship={ship} />
 				{(hover || selected) && <ShipOverlay ship={ship} />}
 				{selected && <SelectionRingModel scale={[0.6, 0.6, 0.6]} />}
