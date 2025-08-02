@@ -58,19 +58,21 @@ export enum PortActionType {
 	load,
 }
 
+export type PortAction =
+	| {
+			type: PortActionType.trade;
+			give: Resource;
+			take: Resource;
+			max: number;
+	  }
+	| { type: PortActionType.unload; give: Resource; max: number }
+	| { type: PortActionType.load; give: Resource; max: number };
+
 export type Route = {
 	id: ID;
 	legs: {
 		port: Port;
-		action:
-			| {
-					type: PortActionType.trade;
-					give: Resource;
-					take: Resource;
-					max: number;
-			  }
-			| { type: PortActionType.unload; give: Resource; max: number }
-			| { type: PortActionType.load; give: Resource; max: number };
+		action: PortAction;
 	}[];
 };
 

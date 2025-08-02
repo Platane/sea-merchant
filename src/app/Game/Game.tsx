@@ -1,11 +1,11 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import React from "react";
-import { addShip, initializeGame } from "../../game/initialize";
+import { initializeGame } from "../../game/initialize";
 import { createAppStateStore } from "./appState";
 import { Provider, useStore } from "./appState/hook";
 import { Scene } from "./Scene";
 import styles from "./style.module.css";
-import { Ui } from "./Ui";
+import { Ui } from "./Ui/Ui";
 
 export const Game = () => {
 	const [store] = React.useState(() => {
@@ -16,8 +16,8 @@ export const Game = () => {
 
 	return (
 		<Provider value={store}>
-			<Ui addShip={() => addShip(store.state.game)} />
-			<Canvas className={styles.canvasContainer} camera={{ fov: 60 }}>
+			<Ui />
+			<Canvas className={styles.canvasContainer} camera={{ fov: 40 }}>
 				<React.Suspense>
 					<Scheduler />
 					<Scene />

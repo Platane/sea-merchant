@@ -1,7 +1,7 @@
 import { createEmptyInventory } from ".";
 import { Game, ID, PortActionType, Route } from "./type";
 
-const generateID = () => Math.floor(Math.random() * 1000000) as ID;
+export const generateID = () => Math.floor(Math.random() * 1000000) as ID;
 export const initializeGame = (game: Game) => {
 	game.ports.push(
 		{
@@ -50,6 +50,22 @@ export const initializeGame = (game: Game) => {
 			serving: null,
 			servingDuration: 50,
 			shipQueueDirection: [Math.cos(5), Math.sin(5)],
+			inventory: createEmptyInventory(),
+		},
+		{
+			id: generateID(),
+			name: "Ruin",
+			position: [-3, -6],
+			deals: [
+				{
+					give: { amount: 2, resource: game.resources[1] },
+					take: { amount: 1, resource: game.resources[2] },
+				},
+			],
+			shipQueue: [],
+			serving: null,
+			servingDuration: 50,
+			shipQueueDirection: [Math.cos(-5), Math.sin(-5)],
 			inventory: createEmptyInventory(),
 		},
 	);

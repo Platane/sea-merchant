@@ -1,6 +1,6 @@
 import { createGameState } from "../../../game";
 import { stepGame } from "../../../game/step";
-import { Game, ID, Vec3 } from "../../../game/type";
+import { Game, ID, Route, Vec2, Vec3 } from "../../../game/type";
 import { createSubscribable } from "../../../utils/subscribable";
 import * as actions from "./actions";
 
@@ -11,7 +11,9 @@ export type AppState = {
 	camera: {
 		eye: Vec3;
 		target: Vec3;
+		pan: { startPointer: Vec2 } | null;
 	};
+	routePlanning: { route: Route; shipId: ID; nextPortId: ID | null } | null;
 };
 
 export const createAppStateStore = () => {
@@ -20,9 +22,11 @@ export const createAppStateStore = () => {
 		selectedShipId: null,
 		selectedPortId: null,
 		camera: {
-			eye: [0, 14, 6],
+			eye: [0, 25, 6],
 			target: [0, 0, 0],
+			pan: null,
 		},
+		routePlanning: null,
 		game: createGameState(),
 	};
 

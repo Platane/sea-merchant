@@ -40,7 +40,10 @@ export const Ship = ({ ship }: { ship: ShipType }) => {
 			ref={ref}
 			onPointerEnter={() => setHover(true)}
 			onPointerLeave={() => setHover(false)}
-			onPointerDown={() => onShipPointerDown(ship.id)}
+			onPointerDown={(e) => {
+				e.stopPropagation();
+				onShipPointerDown(ship.id);
+			}}
 		>
 			<mesh
 				geometry={capsuleGeometry}

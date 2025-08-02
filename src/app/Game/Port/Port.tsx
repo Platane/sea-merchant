@@ -14,6 +14,10 @@ export const Port = ({ port }: { port: PortType }) => {
 		({ selectedPortId }) => selectedPortId === port.id,
 	);
 
+	const needDealSelection = useSelector(
+		({ routePlanning }) => routePlanning?.nextPortId === port.id,
+	);
+
 	// useFrame(() => {
 	// 	const group = ref.current;
 	// 	if (!group) return;
@@ -24,10 +28,29 @@ export const Port = ({ port }: { port: PortType }) => {
 		<group
 			ref={ref}
 			position={[port.position[0], 0, port.position[1]]}
-			onPointerDown={() => onPortPointerDown(port.id)}
+			onPointerDown={(e) => {
+				e.stopPropagation();
+				onPortPointerDown(port.id);
+			}}
 		>
 			<PortModel />
 			{selected && <SelectionRingModel scale={[0.8, 0.8, 0.8]} />}
+		</group>
+	);
+};
+
+const DealSelection = ({ port }: { port: PortType }) => {
+	const { onPortPointerDown } = useStore();
+
+	return (
+		<group
+			position={[port.position[0], 0, port.position[1]]}
+			onPointerDown={(e) => {
+				e.stopPropagation();
+				onPortPointerDown(port.id);
+			}}
+		>
+			<PortModel />
 		</group>
 	);
 };
