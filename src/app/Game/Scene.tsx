@@ -26,8 +26,8 @@ export const Scene = () => (
 
 export const LightRig = () => (
 	<>
-		<ambientLight intensity={1.6} />
-		<directionalLight position={[0.2, 1, 0.5]} />
+		<ambientLight intensity={1.8} />
+		<directionalLight position={[0.2, 1, 0.5]} intensity={2} />
 	</>
 );
 

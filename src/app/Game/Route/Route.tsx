@@ -48,15 +48,16 @@ export const Route = ({
 };
 
 const computeRouteCurve = (route: RouteType) => {
+	const h = 0.001;
 	const positions = route.legs.flatMap(({ port }) => [
 		port.position[0],
-		0,
+		h,
 		port.position[1],
 	]);
 
 	positions.push(
 		route.legs[0].port.position[0],
-		0,
+		h,
 		route.legs[0].port.position[1],
 	);
 

@@ -10,8 +10,16 @@ export const initializeGame = (game: Game) => {
 			position: [7, 5],
 			deals: [
 				{
-					give: { amount: 1, resource: game.resources[0] },
+					give: { amount: 5, resource: game.resources[0] },
 					take: { amount: 1, resource: game.resources[1] },
+				},
+				{
+					give: { amount: 8, resource: game.resources[0] },
+					take: { amount: 1, resource: game.resources[2] },
+				},
+				{
+					give: { amount: 14, resource: game.resources[0] },
+					take: { amount: 1, resource: game.resources[3] },
 				},
 			],
 			futureDeals: [],
