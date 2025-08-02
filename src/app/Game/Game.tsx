@@ -17,7 +17,10 @@ export const Game = () => {
 	return (
 		<Provider value={store}>
 			<Ui />
-			<Canvas className={styles.canvasContainer} camera={{ fov: 40 }}>
+			<Canvas
+				className={styles.canvasContainer}
+				camera={{ fov: 40, position: [0, 15, 5] }}
+			>
 				<React.Suspense>
 					<Scheduler />
 					<Scene />

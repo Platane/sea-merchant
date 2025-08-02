@@ -17,6 +17,8 @@ jobs:
 
       - run: bunx tsc
 
+      - run: bun test
+
       - run: bunx vite build src --base ./ --outDir ../dist
 
       - uses: actions/upload-pages-artifact@v3

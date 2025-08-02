@@ -17,21 +17,3 @@
 }
 .dealList {
 }
-.dealItem {
-	display: flex;
-	flex-direction: row;
-	justify-items: center;
-	align-items: center;
-}
-.dealResourceIcon {
-	width: 32px;
-	height: 32px;
-}
-.dealArrow {
-	display: inline-block;
-	margin: 0 4px;
-}
-.dealQuantity {
-	font-size: 22px;
-	font-family: monospace;
-}

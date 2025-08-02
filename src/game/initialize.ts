@@ -3,6 +3,17 @@ import { Game, ID, PortActionType, Route } from "./type";
 
 export const generateID = () => Math.floor(Math.random() * 1000000) as ID;
 export const initializeGame = (game: Game) => {
+	game.players.push({
+		id: generateID(),
+		name: "Jack",
+		color: "blue",
+	});
+	game.players.push({
+		id: generateID(),
+		name: "IA",
+		color: "red",
+	});
+
 	game.ports.push(
 		{
 			id: generateID(),
@@ -14,12 +25,25 @@ export const initializeGame = (game: Game) => {
 					take: { amount: 1, resource: game.resources[1] },
 				},
 				{
-					give: { amount: 8, resource: game.resources[0] },
+					give: { amount: 9, resource: game.resources[0] },
 					take: { amount: 1, resource: game.resources[2] },
 				},
 				{
 					give: { amount: 14, resource: game.resources[0] },
 					take: { amount: 1, resource: game.resources[3] },
+				},
+
+				{
+					take: { amount: 5, resource: game.resources[0] },
+					give: { amount: 1, resource: game.resources[1] },
+				},
+				{
+					take: { amount: 9, resource: game.resources[0] },
+					give: { amount: 1, resource: game.resources[2] },
+				},
+				{
+					take: { amount: 14, resource: game.resources[0] },
+					give: { amount: 1, resource: game.resources[3] },
 				},
 			],
 			futureDeals: [],
@@ -27,7 +51,22 @@ export const initializeGame = (game: Game) => {
 			serving: null,
 			servingDuration: 50,
 			shipQueueDirection: [Math.cos(4), Math.sin(4)],
-			inventory: createEmptyInventory(),
+			storage: {
+				playerInventory: {
+					[game.players[0].id]: {
+						...createEmptyInventory(),
+						[game.resources[0]]: 100,
+					},
+					[game.players[1].id]: {
+						...createEmptyInventory(),
+						[game.resources[0]]: 100,
+					},
+				},
+				playerStoragePosition: {
+					[game.players[0].id]: [Math.cos(1.5), Math.sin(1.5)],
+					[game.players[1].id]: [Math.cos(2.5), Math.sin(2.5)],
+				},
+			},
 		},
 		{
 			id: generateID(),
@@ -36,7 +75,11 @@ export const initializeGame = (game: Game) => {
 			deals: [
 				{
 					give: { amount: 1, resource: game.resources[1] },
-					take: { amount: 1, resource: game.resources[0] },
+					take: { amount: 8, resource: game.resources[0] },
+				},
+				{
+					give: { amount: 1, resource: game.resources[3] },
+					take: { amount: 2, resource: game.resources[2] },
 				},
 			],
 			futureDeals: [],
@@ -44,7 +87,6 @@ export const initializeGame = (game: Game) => {
 			serving: null,
 			servingDuration: 50,
 			shipQueueDirection: [Math.cos(1), Math.sin(1)],
-			inventory: createEmptyInventory(),
 		},
 		{
 			id: generateID(),
@@ -62,17 +104,16 @@ export const initializeGame = (game: Game) => {
 			serving: null,
 			servingDuration: 50,
 			shipQueueDirection: [Math.cos(5), Math.sin(5)],
-			inventory: createEmptyInventory(),
 		},
 		{
 			id: generateID(),
 			name: "Ruinifar",
 			position: [-3, -6],
 			deals: [
-				{
-					give: { amount: 2, resource: game.resources[1] },
-					take: { amount: 5, resource: game.resources[2] },
-				},
+				// {
+				// 	give: { amount: 3, resource: game.resources[3] },
+				// 	take: { amount: 1, resource: game.resources[2] },
+				// },
 			],
 			shipQueue: [],
 			futureDeals: [],
@@ -80,11 +121,8 @@ export const initializeGame = (game: Game) => {
 			serving: null,
 			servingDuration: 50,
 			shipQueueDirection: [Math.cos(-5), Math.sin(-5)],
-			inventory: createEmptyInventory(),
 		},
 	);
-
-	game.mainPort = game.ports[3];
 
 	const route: Route = {
 		id: generateID(),
@@ -127,15 +165,28 @@ export const initializeGame = (game: Game) => {
 		],
 	};
 
+	// game.ships.push({
+	// 	id: generateID(),
+	// 	name: "The Explorer",
+	// 	blueprint: game.shipBluePrints[0],
+	// 	position: [game.ships.length, 0],
+	// 	direction: [1, 0],
+	// 	target: [0, 0],
+	// 	cargo: { ...createEmptyInventory(), [game.resources[0]]: 12 },
+	// 	followingRoute: { route, legIndex: 0 },
+	// 	owner: game.players[0],
+	// });
+
 	game.ships.push({
 		id: generateID(),
-		name: "The Explorer",
+		name: "Santa Volta",
 		blueprint: game.shipBluePrints[0],
 		position: [game.ships.length, 0],
 		direction: [1, 0],
 		target: [0, 0],
-		cargo: { ...createEmptyInventory(), [game.resources[0]]: 12 },
-		followingRoute: { route, legIndex: 0 },
+		cargo: createEmptyInventory(),
+		followingRoute: null,
+		owner: game.players[1],
 	});
 
 	return game;
@@ -150,14 +201,8 @@ export const addShip = (game: Game) => {
 		position: [Math.random() * 4 - 2, Math.random() * 4 - 2],
 		direction: [Math.cos(a), Math.sin(a)],
 		target: [0, 0],
-		cargo: {
-			...createEmptyInventory(),
-			[game.resources[0]]: 12,
-			[game.resources[2]]: 4,
-		},
-		followingRoute: {
-			route: game.ships[0].followingRoute!.route,
-			legIndex: 1,
-		},
+		cargo: createEmptyInventory(),
+		owner: game.players[1],
+		followingRoute: null,
 	});
 };

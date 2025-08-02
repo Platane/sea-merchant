@@ -1,6 +1,8 @@
+import { stepIA } from "./ai";
 import {
 	Deal,
 	Game,
+	Inventory,
 	Port,
 	PortActionType,
 	Route,
@@ -10,6 +12,8 @@ import {
 
 export const stepGame = (state: Game) => {
 	state.time++;
+
+	stepIA(state);
 
 	for (const port of state.ports) stepPort(port, state);
 
@@ -73,40 +77,47 @@ export const stepPort = (port: Port, state: Game) => {
 					return;
 				}
 
-				const weightDelta =
-					deal.give.amount * state.resourceWeight[deal.give.resource] -
-					deal.take.amount * state.resourceWeight[deal.take.resource];
-
-				const availableSpace =
-					ship.blueprint.cargoCapacity -
-					state.resources.reduce((sum, r) => sum + ship.cargo[r], 0);
-
-				const k = Math.min(
+				executeTrade(
+					state,
+					deal,
+					ship.cargo,
+					ship.blueprint.cargoCapacity,
 					action.max,
-					Math.floor(
-						Math.max(
-							0,
-							availableSpace / weightDelta,
-							ship.cargo[deal.take.resource] / deal.take.amount,
-						),
-					),
 				);
-
-				ship.cargo[deal.give.resource] += k * deal.give.amount;
-				ship.cargo[deal.take.resource] -= k * deal.take.amount;
 			}
 
 			if (action.type === PortActionType.unload) {
+				if (!port.storage) {
+					console.warn("Port does not support unloading");
+					return;
+				}
+
+				const portInventory = port.storage.playerInventory[ship.owner.id];
+
 				const k = Math.min(ship.cargo[action.give], action.max);
 				ship.cargo[action.give] -= k;
+				portInventory[action.give] += k;
 			}
 
 			if (action.type === PortActionType.load) {
+				if (!port.storage) {
+					console.warn("Port does not support loading");
+					return;
+				}
+
 				const availableSpace =
 					ship.blueprint.cargoCapacity -
 					state.resources.reduce((sum, r) => sum + ship.cargo[r], 0);
-				const k = Math.min(availableSpace, action.max);
-				ship.cargo[action.give] += k;
+
+				const portInventory = port.storage.playerInventory[ship.owner.id];
+
+				const k = Math.min(
+					availableSpace / state.resourceWeight[action.take],
+					action.max,
+					portInventory[action.take],
+				);
+				ship.cargo[action.take] += k;
+				portInventory[action.take] -= k;
 			}
 
 			// continue serving if more action are on this port
@@ -116,6 +127,36 @@ export const stepPort = (port: Port, state: Game) => {
 				port.serving = { ship: ship, startedDate: 0 as Timestamp };
 		}
 	}
+};
+
+export const executeTrade = (
+	state: Game,
+	deal: Deal,
+	inventory: Inventory,
+	maxCapacity: number,
+	max: number = Infinity,
+) => {
+	const weightDelta =
+		deal.give.amount * state.resourceWeight[deal.give.resource] -
+		deal.take.amount * state.resourceWeight[deal.take.resource];
+
+	const availableSpace =
+		maxCapacity -
+		state.resources.reduce(
+			(sum, r) => sum + inventory[r] * state.resourceWeight[r],
+			0,
+		);
+
+	const k = Math.floor(
+		Math.min(
+			max,
+			weightDelta > 0 ? availableSpace / weightDelta : Infinity,
+			inventory[deal.take.resource] / deal.take.amount,
+		),
+	);
+
+	inventory[deal.give.resource] += k * deal.give.amount;
+	inventory[deal.take.resource] -= k * deal.take.amount;
 };
 
 const nextLeg = (fr: { route: Route; legIndex: number }) => {

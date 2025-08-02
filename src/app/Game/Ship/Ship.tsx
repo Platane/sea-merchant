@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { Ship as ShipType } from "../../../game/type";
 import { arrayEquals } from "../../../utils/array";
 import { useGame, useSelector, useStore } from "../appState/hook";
+import { ResourceIcon } from "../Icon/ResourceIcon";
 import { SailBoatModel } from "../Model/SailBoatModel";
 import { SelectionRingModel } from "../Model/SelectionRingModel";
 import { Route } from "../Route/Route";
@@ -88,6 +89,12 @@ const ShipOverlay = ({ ship }: { ship: ShipType }) => {
 					/>
 				))}
 			</div>
+			{resources.map((r) => (
+				<div key={r} style={{ display: "flex", flexDirection: "row" }}>
+					<ResourceIcon resource={r} style={{ width: 32, height: 32 }} /> x{" "}
+					<span>{ship.cargo[r]}</span>
+				</div>
+			))}
 		</Html>
 	);
 };

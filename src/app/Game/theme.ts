@@ -5,20 +5,20 @@ import { GrapesModel } from "./Model/GrapesModel";
 import { PumpkinModel } from "./Model/PumpkinModel";
 
 export const resourceColors = {
-	[1 as Resource]: "#f9e72d",
-	[2 as Resource]: "#e29200",
-	[3 as Resource]: "purple",
-	[4 as Resource]: "#f9e72d",
+	["coin" as Resource]: "#f9e72d",
+	["pumpkin" as Resource]: "#e29200",
+	["grapes" as Resource]: "purple",
+	["banana" as Resource]: "#f9e72d",
 };
 export const resourceNames = {
-	[1 as Resource]: "Coin",
-	[2 as Resource]: "Pumpkin",
-	[3 as Resource]: "Grapes",
-	[4 as Resource]: "Banana",
+	["coin" as Resource]: "Coin",
+	["pumpkin" as Resource]: "Pumpkin",
+	["grapes" as Resource]: "Grapes",
+	["banana" as Resource]: "Banana",
 };
 export const resourceModels = {
-	[1 as Resource]: CoinModel,
-	[2 as Resource]: PumpkinModel,
-	[3 as Resource]: GrapesModel,
-	[4 as Resource]: BananaModel,
+	["coin" as Resource]: CoinModel,
+	["pumpkin" as Resource]: PumpkinModel,
+	["grapes" as Resource]: GrapesModel,
+	["banana" as Resource]: BananaModel,
 };

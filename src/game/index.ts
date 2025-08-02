@@ -5,15 +5,10 @@ export const createGameState = (): Game => {
 		time: 0 as Timestamp,
 		ports: [],
 		ships: [],
+		players: [],
 		shipBluePrints: shipBluePrints,
-		routes: [],
-		// inventory: Object.fromEntries(resources.map((r) => [r, 0])) as Record<
-		// 	Resource,
-		// 	number
-		// >,
 		resources,
 		resourceWeight,
-		mainPort: null as any,
 	};
 };
 
@@ -24,13 +19,13 @@ export const createEmptyInventory = (): Record<Resource, number> => {
 	>;
 };
 
-const resources = [1, 2, 3, 4] as Resource[];
+const resources = ["coin", "pumpkin", "grapes", "banana"] as Resource[];
 
 const resourceWeight = {
-	1: 0,
-	2: 1,
-	3: 2,
-	4: 1,
+	coin: 0,
+	pumpkin: 1,
+	grapes: 2,
+	banana: 1,
 } as Record<Resource, number>;
 
 const shipBluePrints: ShipBluePrint[] = [

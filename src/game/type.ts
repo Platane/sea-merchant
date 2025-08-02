@@ -31,7 +31,10 @@ export type Port = {
 		startedDate: Timestamp;
 	} | null;
 	servingDuration: number;
-	inventory: Inventory;
+	storage?: {
+		playerInventory: Record<ID, Inventory>;
+		playerStoragePosition: Record<ID, Vec2>;
+	};
 	futureDeals: { deals: Deal[]; date: Timestamp }[];
 };
 
@@ -51,6 +54,7 @@ export type Ship = {
 	target: Vec2;
 	cargo: Inventory;
 	followingRoute: { route: Route; legIndex: number } | null;
+	owner: Player;
 };
 
 export enum PortActionType {
@@ -67,7 +71,7 @@ export type PortAction =
 			max: number;
 	  }
 	| { type: PortActionType.unload; give: Resource; max: number }
-	| { type: PortActionType.load; give: Resource; max: number };
+	| { type: PortActionType.load; take: Resource; max: number };
 
 export type Route = {
 	id: ID;
@@ -77,15 +81,20 @@ export type Route = {
 	}[];
 };
 
+export type Player = {
+	id: ID;
+	name: string;
+	color: string;
+};
+
 export type Game = {
 	time: Timestamp;
 	ports: Port[];
 	ships: Ship[];
+	players: Player[];
 	shipBluePrints: ShipBluePrint[];
-	routes: Route[];
 	resourceWeight: Record<Resource, number>;
 	resources: Resource[];
-	mainPort: Port;
 };
 
 export type Inventory = Record<Resource, Amount>;
