@@ -60,7 +60,7 @@ export const Ship = ({ ship }: { ship: ShipType }) => {
 					visible={false}
 				/>
 				<BoatModel />
-				<Cargo ship={ship} />
+				{/*<Cargo ship={ship} />*/}
 				{(hover || selected) && <ShipOverlay ship={ship} />}
 				{selected && <SelectionRingModel scale={[0.6, 0.6, 0.6]} />}
 			</group>
