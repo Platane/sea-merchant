@@ -1,6 +1,15 @@
 # Sea Merchant
 
-A game for [gmtk Jam 2025](https://itch.io/jam/gmtk-2025)
+![Sea Merchant map](https://github.com/user-attachments/assets/e2362cab-15f0-477b-ac16-02a720862f4d)
+
+![Sea Merchant gameplay video](https://github.com/user-attachments/assets/61ecdb92-3f39-4221-9c82-ceda051385fc)
+
+
+
+A widly unfiniished game for [gmtk Jam 2025](https://itch.io/jam/gmtk-2025)
+
+- [⛵ play](https://platane.github.io/sea-merchant/)
+- [🎮 itch.io](https://platane.itch.io/sea-merchant)
 
 # Usage
 
