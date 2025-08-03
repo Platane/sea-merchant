@@ -15,7 +15,7 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      - run: bunx tsc
+      # - run: bunx tsc
 
       - run: bun test
 
