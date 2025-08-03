@@ -9,6 +9,8 @@ body {
 	justify-content: stretch;
 	align-items: stretch;
 	position: relative;
+
+	user-select: none;
 }
 
 .app {
