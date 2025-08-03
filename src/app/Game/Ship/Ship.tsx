@@ -52,6 +52,7 @@ export const Ship = ({ ship }: { ship: ShipType }) => {
 				}}
 			>
 				<mesh
+					name="collisionBox"
 					geometry={capsuleGeometry}
 					material={capsuleMaterial}
 					scale={[0.8, 1, 1.5]}

@@ -3,7 +3,7 @@ import React from "react";
 
 import greenPepper_url from "../../../assets/models/green-pepper.glb?url";
 
-export const preload = () => useGLTF.preload(greenPepper_url);
+useGLTF.preload(greenPepper_url);
 
 export const GreenPepperModel = (props: React.ComponentProps<"group">) => {
 	const { nodes, materials } = useGLTF(greenPepper_url) as any;

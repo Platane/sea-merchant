@@ -3,7 +3,7 @@ import React from "react";
 
 import sailBoat_url from "../../../assets/models/sail-boat.glb?url";
 
-export const preload = () => useGLTF.preload(sailBoat_url);
+useGLTF.preload(sailBoat_url);
 
 export const SailBoatModel = (props: React.ComponentProps<"group">) => {
 	const { nodes, materials } = useGLTF(sailBoat_url) as any;

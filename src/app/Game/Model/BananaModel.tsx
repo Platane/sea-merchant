@@ -3,7 +3,7 @@ import React from "react";
 
 import banana_url from "../../../assets/models/banana.glb?url";
 
-export const preload = () => useGLTF.preload(banana_url);
+useGLTF.preload(banana_url);
 
 export const BananaModel = (props: React.ComponentProps<"group">) => {
 	const { nodes, materials } = useGLTF(banana_url) as any;

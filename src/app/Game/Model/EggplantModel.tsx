@@ -3,7 +3,7 @@ import React from "react";
 
 import eggplant_url from "../../../assets/models/eggplant.glb?url";
 
-export const preload = () => useGLTF.preload(eggplant_url);
+useGLTF.preload(eggplant_url);
 
 export const EggplantModel = (props: React.ComponentProps<"group">) => {
 	const { nodes, materials } = useGLTF(eggplant_url) as any;

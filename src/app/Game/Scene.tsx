@@ -1,23 +1,32 @@
-import { OrbitControls } from "@react-three/drei";
+import { MapControls } from "@react-three/drei";
 import React from "react";
-import * as THREE from "three";
 import { arrayEquals } from "../../utils/array";
 import { Ground } from "../Ground/Ground";
 import { useGame, useSelector, useStore } from "./appState/hook";
-import { Camera } from "./Camera";
+import { SimpleDockModel } from "./Model/SimpleDockModel";
 import { Port } from "./Port/Port";
 import { Ship } from "./Ship/Ship";
 
 export const Scene = () => (
 	<>
-		<OrbitControls />
-		{/*<Camera />*/}
+		<MapControls
+			maxDistance={60}
+			minDistance={12}
+			enabled={true}
+			enableDamping
+			maxPolarAngle={Math.PI / 2 - Math.PI / 6}
+			minPolarAngle={Math.PI / 12}
+		/>
 
 		<LightRig />
 
 		<Ships />
 
 		<Ports />
+
+		{/*<mesh>
+			<boxGeometry args={[0.5, 0.5, 0.5]} />
+		</mesh>*/}
 
 		<Water />
 

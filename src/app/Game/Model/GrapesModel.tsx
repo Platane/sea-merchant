@@ -3,7 +3,7 @@ import React from "react";
 
 import grapes_url from "../../../assets/models/grapes.glb?url";
 
-export const preload = () => useGLTF.preload(grapes_url);
+useGLTF.preload(grapes_url);
 
 export const GrapesModel = (props: React.ComponentProps<"group">) => {
 	const { nodes, materials } = useGLTF(grapes_url) as any;

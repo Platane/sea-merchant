@@ -3,7 +3,7 @@ import React from "react";
 
 import coin_url from "../../../assets/models/coin.glb?url";
 
-export const preload = () => useGLTF.preload(coin_url);
+useGLTF.preload(coin_url);
 
 export const CoinModel = (props: React.ComponentProps<"group">) => {
 	const { nodes, materials } = useGLTF(coin_url) as any;

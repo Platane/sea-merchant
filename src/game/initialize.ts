@@ -49,7 +49,7 @@ export const initializeGame = (game: Game) => {
 		{
 			id: generateID(),
 			name: "Puerto Santander",
-			position: [7, 5],
+			position: [15.4, -14],
 			deals: [
 				{
 					give: { amount: 5, resource: game.resources[0] },
@@ -81,7 +81,7 @@ export const initializeGame = (game: Game) => {
 			shipQueue: [],
 			serving: null,
 			servingDuration: 50,
-			shipQueueDirection: [Math.cos(4), Math.sin(4)],
+			shipQueueDirection: [Math.cos(-5), Math.sin(-5)],
 			storage: {
 				playerInventory: {
 					[game.players[0].id]: {
@@ -102,7 +102,7 @@ export const initializeGame = (game: Game) => {
 		{
 			id: generateID(),
 			name: "New Faro",
-			position: [-6, 2],
+			position: [-12.6, -10.6],
 			deals: [
 				{
 					give: { amount: 1, resource: game.resources[1] },
@@ -117,12 +117,12 @@ export const initializeGame = (game: Game) => {
 			shipQueue: [],
 			serving: null,
 			servingDuration: 50,
-			shipQueueDirection: [Math.cos(1), Math.sin(1)],
+			shipQueueDirection: [Math.cos(5.3), Math.sin(5.3)],
 		},
 		{
 			id: generateID(),
 			name: "Gegalia",
-			position: [2, 8],
+			position: [-13.1, 15.1],
 			deals: [
 				{
 					give: { amount: 2, resource: game.resources[1] },
@@ -138,20 +138,41 @@ export const initializeGame = (game: Game) => {
 		},
 		{
 			id: generateID(),
-			name: "Ruinifar",
-			position: [-3, -6],
+			name: "Gegalia Prime",
+			position: [-17.8, 16.7],
 			deals: [
-				// {
-				// 	give: { amount: 3, resource: game.resources[3] },
-				// 	take: { amount: 1, resource: game.resources[2] },
-				// },
+				{
+					give: { amount: 2, resource: game.resources[1] },
+					take: { amount: 1, resource: game.resources[2] },
+				},
 			],
 			shipQueue: [],
 			futureDeals: [],
 
 			serving: null,
 			servingDuration: 50,
-			shipQueueDirection: [Math.cos(-5), Math.sin(-5)],
+			shipQueueDirection: [Math.cos(6), Math.sin(6)],
+		},
+		{
+			id: generateID(),
+			name: "Ruinifar",
+			position: [2.26, 10.6],
+			deals: [
+				{
+					give: { amount: 2, resource: game.resources[3] },
+					take: { amount: 1, resource: game.resources[2] },
+				},
+				{
+					give: { amount: 2, resource: game.resources[3] },
+					take: { amount: 3, resource: game.resources[1] },
+				},
+			],
+			shipQueue: [],
+			futureDeals: [],
+
+			serving: null,
+			servingDuration: 50,
+			shipQueueDirection: [Math.cos(5.5), Math.sin(5.5)],
 		},
 	);
 

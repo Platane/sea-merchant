@@ -20,6 +20,8 @@ export const onPortPointerDown = (state: AppState, portId: ID) => {
 };
 
 export const onGroundPointerDown = (state: AppState, groundPosition: Vec2) => {
+	console.log(...groundPosition);
+
 	state.selectedShipId = state.selectedPortId = null;
 	state.camera.pan = { startPointer: [groundPosition[0], groundPosition[1]] };
 };
