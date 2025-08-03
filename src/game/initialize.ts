@@ -1,8 +1,39 @@
 import { createEmptyInventory } from ".";
-import { Game, ID, PortActionType, Route } from "./type";
+import { createColorMap } from "./map/colorMap";
+import { createHeightMap } from "./map/heightMap";
+import { Game, ID, Map, PortActionType, Route } from "./type";
 
 export const generateID = () => Math.floor(Math.random() * 1000000) as ID;
+export const generateMap = (seed: number) => {
+	const heightMap = document.createElement("canvas");
+	heightMap.width = 512;
+	heightMap.height = 512;
+	createHeightMap(heightMap, seed);
+
+	const texture = document.createElement("canvas");
+	texture.width = 2048 * 2;
+	texture.height = 2048 * 2;
+	createColorMap(texture, seed);
+
+	// setTimeout(() => {
+	// 	document.body.appendChild(canvas);
+	// }, 400);
+
+	const size = 50;
+	const gridCellSize = 20;
+
+	return {
+		heightMap,
+		texture,
+		grid: new Uint8Array(),
+		gridCellSize,
+		size,
+		navigationMesh: null,
+	} satisfies Map;
+};
 export const initializeGame = (game: Game) => {
+	game.map = generateMap(135321);
+
 	game.players.push({
 		id: generateID(),
 		name: "Jack",

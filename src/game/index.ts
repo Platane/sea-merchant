@@ -9,6 +9,14 @@ export const createGameState = (): Game => {
 		shipBluePrints: shipBluePrints,
 		resources,
 		resourceWeight,
+		map: {
+			grid: new Uint8Array(),
+			navigationMesh: null,
+			gridCellSize: 0,
+			size: 0,
+			heightMap: undefined as any,
+			texture: undefined as any,
+		},
 	};
 };
 

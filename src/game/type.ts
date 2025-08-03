@@ -87,6 +87,15 @@ export type Player = {
 	color: string;
 };
 
+export type Map = {
+	gridCellSize: number;
+	size: number;
+	grid: Uint8Array; // grid[ x + y * gridSize ]
+	navigationMesh: unknown;
+	heightMap: TexImageSource;
+	texture: TexImageSource;
+};
+
 export type Game = {
 	time: Timestamp;
 	ports: Port[];
@@ -95,6 +104,7 @@ export type Game = {
 	shipBluePrints: ShipBluePrint[];
 	resourceWeight: Record<Resource, number>;
 	resources: Resource[];
+	map: Map;
 };
 
 export type Inventory = Record<Resource, Amount>;

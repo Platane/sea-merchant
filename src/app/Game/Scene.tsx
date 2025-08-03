@@ -2,6 +2,7 @@ import { OrbitControls } from "@react-three/drei";
 import React from "react";
 import * as THREE from "three";
 import { arrayEquals } from "../../utils/array";
+import { Ground } from "../Ground/Ground";
 import { useGame, useSelector, useStore } from "./appState/hook";
 import { Camera } from "./Camera";
 import { Port } from "./Port/Port";
@@ -18,6 +19,8 @@ export const Scene = () => (
 
 		<Ports />
 
+		<Water />
+
 		<Ground />
 	</>
 );
@@ -29,19 +32,19 @@ export const LightRig = () => (
 	</>
 );
 
-const Ground = () => {
+const Water = () => {
 	const { onGroundPointerDown, onGroundPointerMove, onGroundPointerUp } =
 		useStore();
 
 	return (
 		<mesh
-			scale={[25, 25, 25]}
+			scale={[1, 1, 1]}
 			rotation={[-Math.PI / 2, 0, 0]}
 			onPointerDown={(e) => onGroundPointerDown([e.point.x, e.point.z])}
 			onPointerMove={(e) => onGroundPointerMove([e.point.x, e.point.z])}
 			onPointerUp={(e) => onGroundPointerUp([e.point.x, e.point.z])}
 		>
-			<planeGeometry args={[1, 1]} />
+			<planeGeometry args={[200, 200, 100, 100]} />
 			<meshStandardMaterial color="#5075e2" />
 		</mesh>
 	);
