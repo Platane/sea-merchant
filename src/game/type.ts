@@ -55,6 +55,11 @@ export type Ship = {
 	cargo: Inventory;
 	followingRoute: { route: Route; legIndex: number } | null;
 	owner: Player;
+	inventoryMovementHistory: {
+		movement: Partial<Inventory>;
+		port: Port;
+		date: Timestamp;
+	}[];
 };
 
 export enum PortActionType {

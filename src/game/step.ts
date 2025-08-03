@@ -77,13 +77,24 @@ export const stepPort = (port: Port, state: Game) => {
 					return;
 				}
 
-				executeTrade(
+				const k = getTradeVolume(
 					state,
 					deal,
 					ship.cargo,
 					ship.blueprint.cargoCapacity,
 					action.max,
 				);
+				ship.cargo[deal.give.resource] += k * deal.give.amount;
+				ship.cargo[deal.take.resource] -= k * deal.take.amount;
+
+				ship.inventoryMovementHistory.push({
+					date: state.time,
+					port,
+					movement: {
+						[deal.give.resource]: k * deal.give.amount,
+						[deal.take.resource]: -k * deal.take.amount,
+					},
+				});
 			}
 
 			if (action.type === PortActionType.unload) {
@@ -97,6 +108,12 @@ export const stepPort = (port: Port, state: Game) => {
 				const k = Math.min(ship.cargo[action.give], action.max);
 				ship.cargo[action.give] -= k;
 				portInventory[action.give] += k;
+
+				ship.inventoryMovementHistory.push({
+					date: state.time,
+					port,
+					movement: { [action.give]: -k },
+				});
 			}
 
 			if (action.type === PortActionType.load) {
@@ -118,6 +135,12 @@ export const stepPort = (port: Port, state: Game) => {
 				);
 				ship.cargo[action.take] += k;
 				portInventory[action.take] -= k;
+
+				ship.inventoryMovementHistory.push({
+					date: state.time,
+					port,
+					movement: { [action.take]: k },
+				});
 			}
 
 			// continue serving if more action are on this port
@@ -130,6 +153,19 @@ export const stepPort = (port: Port, state: Game) => {
 };
 
 export const executeTrade = (
+	state: Game,
+	deal: Deal,
+	inventory: Inventory,
+	maxCapacity: number,
+	max: number = Infinity,
+) => {
+	const k = getTradeVolume(state, deal, inventory, maxCapacity, max);
+
+	inventory[deal.give.resource] += k * deal.give.amount;
+	inventory[deal.take.resource] -= k * deal.take.amount;
+};
+
+export const getTradeVolume = (
 	state: Game,
 	deal: Deal,
 	inventory: Inventory,
@@ -155,8 +191,7 @@ export const executeTrade = (
 		),
 	);
 
-	inventory[deal.give.resource] += k * deal.give.amount;
-	inventory[deal.take.resource] -= k * deal.take.amount;
+	return k;
 };
 
 const nextLeg = (fr: { route: Route; legIndex: number }) => {

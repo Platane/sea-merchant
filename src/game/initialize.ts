@@ -239,6 +239,7 @@ export const initializeGame = (game: Game) => {
 		cargo: createEmptyInventory(),
 		followingRoute: null,
 		owner: game.players[1],
+		inventoryMovementHistory: [],
 	});
 
 	return game;
@@ -256,5 +257,6 @@ export const addShip = (game: Game) => {
 		cargo: createEmptyInventory(),
 		owner: game.players[1],
 		followingRoute: null,
+		inventoryMovementHistory: [],
 	});
 };
