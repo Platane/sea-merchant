@@ -24,14 +24,6 @@ export const Scene = () => (
 
 		<Ports />
 
-		<mesh>
-			<sphereGeometry args={[0.5, 32, 32]} />
-		</mesh>
-
-		{/*<mesh>
-			<boxGeometry args={[0.5, 0.5, 0.5]} />
-		</mesh>*/}
-
 		<Water />
 
 		<Ground />

@@ -15,8 +15,8 @@ export const Ui = () => {
 	return (
 		<>
 			<div className={styles.uiContainer}>
-				<div>shipCount: {shipCount}</div>
-				<button onClick={() => addShip(store.state.game)}>Add Ship</button>
+				{/*<div>shipCount: {shipCount}</div>
+				<button onClick={() => addShip(store.state.game)}>Add Ship</button>*/}
 				<Selection />
 			</div>
 			{(ship || routePlanning) && (
