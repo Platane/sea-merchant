@@ -2,7 +2,12 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { generateIcons } from "./app/Game/Icon/ResourceIcon";
 
-Promise.all([import("./app/App"), generateIcons()]).then(([{ App }]) => {
+Promise.all([
+	//
+	import("./app/App"),
+	import("@dimforge/rapier3d-compat"),
+	generateIcons(),
+]).then(([{ App }]) => {
 	// for (const r of [1, 2, 3]) {
 	// 	const img = document.createElement("img");
 	// 	img.style.width = "256px";
