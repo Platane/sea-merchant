@@ -1,5 +1,5 @@
 import type IRAPIER from "@dimforge/rapier3d-compat";
-import type { World } from "@dimforge/rapier3d-compat";
+import type { RigidBody, World } from "@dimforge/rapier3d-compat";
 import { useFrame, useThree } from "@react-three/fiber";
 import React from "react";
 import * as THREE from "three";
@@ -39,16 +39,16 @@ const createParticlesSystem = (RAPIER: typeof IRAPIER, game: Game) => {
 	const particlesRadius = 0.1;
 
 	// add bodies
-	const bodies = Array.from({ length: 500 }).map((_, i) => {
+	const bodies = Array.from({ length: 100 }).map((_, i) => {
 		const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic();
 
 		const rigidBody = world.createRigidBody(rigidBodyDesc);
 		rigidBody.setBodyType(RAPIER.RigidBodyType.Dynamic, true);
 		rigidBody.setTranslation(
 			{
-				x: Math.random() * 5 - 2.5,
-				y: 3 + Math.random() * 4,
-				z: Math.random() * 5 - 2.5,
+				x: Math.random() * 2,
+				y: 2 + Math.random() * 2,
+				z: Math.random() * 2 - 1,
 			},
 			false,
 		);
@@ -85,7 +85,9 @@ const createParticlesSystem = (RAPIER: typeof IRAPIER, game: Game) => {
 			for (const collider of colliders) world.removeCollider(collider, false);
 		};
 
-		return { body, dispose };
+		const particles: { body: RigidBody; dispose: () => void }[] = [];
+
+		return { body, dispose, particles };
 	};
 
 	const buckets = new Map<ID, ReturnType<typeof createBucket>>();
@@ -102,35 +104,35 @@ const createParticlesSystem = (RAPIER: typeof IRAPIER, game: Game) => {
 	const geometry = new THREE.SphereGeometry(particlesRadius);
 	const material = new THREE.MeshStandardMaterial({ color: "orange" });
 
+	const v = new THREE.Vector3();
+	const q = new THREE.Quaternion();
+	const eu = new THREE.Euler();
 	const step = () => {
 		//
 		// create and move ship buckets
 		//
 		for (const ship of game.ships) {
+			// get / create bucket for the ship
 			let bucket = buckets.get(ship.id);
 			if (!bucket) {
 				bucket = createBucket(0.5, 0.5);
 				buckets.set(ship.id, bucket);
 			}
 
-			bucket.body.setTranslation(
-				{
-					x: ship.position[0],
-					y: 0.06,
-					z: ship.position[1],
-				},
-				false,
-			);
+			// move bucket with ship
+			v.set(ship.position[0], 0.06, ship.position[1]);
+			bucket.body.setTranslation(v, false);
 
 			const a = -Math.atan2(ship.direction[1], ship.direction[0]) + Math.PI / 2;
-			const q = new THREE.Quaternion();
-			q.setFromEuler(new THREE.Euler(0, a, 0));
-
+			eu.set(0, a, 0);
+			q.setFromEuler(eu);
 			bucket.body.setRotation(q, false);
+
+			// alter particles
+			// let ship.inventoryMovementHistory
 		}
-		if (buckets.size !== game.ships.length) {
-			console.log("should clean up bucket");
-		}
+
+		// TODO remove bucket eventually
 
 		world.step();
 
