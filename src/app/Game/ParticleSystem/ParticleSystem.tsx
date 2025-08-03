@@ -57,13 +57,13 @@ const createParticlesSystem = (
 
 	// Create the ground
 	const groundColliderDesc = RAPIER.ColliderDesc.cuboid(100.0, 2, 100.0);
-	groundColliderDesc.setTranslation(0, -2.1, 0);
+	groundColliderDesc.setTranslation(0, -2.3, 0);
 	world.createCollider(groundColliderDesc);
 
 	const particlesRadius = 0.1;
 
 	// add bodies
-	const bodies = Array.from({ length: 100 }).map((_, i) => {
+	const bodies = Array.from({ length: 140 }).map((_, i) => {
 		const rigidBodyDesc = RAPIER.RigidBodyDesc.dynamic();
 
 		const rigidBody = world.createRigidBody(rigidBodyDesc);
