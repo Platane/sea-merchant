@@ -3,21 +3,41 @@ import type { RigidBody, World } from "@dimforge/rapier3d-compat";
 import { useFrame, useThree } from "@react-three/fiber";
 import React from "react";
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import pumpkin_glb_uri from "../../../assets/models/pumpkin.glb?url";
 import { Game, ID, Resource } from "../../../game/type";
 import { useGame } from "../appState/hook";
 
 let rapier: typeof IRAPIER;
-const promise = import("@dimforge/rapier3d-compat").then(async (r) => {
+const rapierPromise = import("@dimforge/rapier3d-compat").then(async (r) => {
 	await r.init();
 	rapier = r;
 });
 
+const loadResourceModels = async () => {
+	const loader = new GLTFLoader();
+	const { scene: pumpkin } = await loader.loadAsync(pumpkin_glb_uri);
+	pumpkin.scale.set(0.1, 0.15, 0.1);
+	pumpkin.position.set(0, 0.01, 0);
+	return {
+		pumpkin,
+	} as Record<Resource, THREE.Object3D>;
+};
+
+let resourceModels: Awaited<ReturnType<typeof loadResourceModels>>;
+const resourceModelsPromise = loadResourceModels().then((r) => {
+	resourceModels = r;
+});
+
 export const ParticleSystem = () => {
-	if (!rapier) throw promise;
+	if (!rapier) throw rapierPromise;
+	if (!resourceModels) throw resourceModelsPromise;
 
 	const { scene } = useThree();
 	const game = useGame();
-	const [system] = React.useState(() => createParticlesSystem(rapier, game));
+	const [system] = React.useState(() =>
+		createParticlesSystem(rapier, resourceModels, game),
+	);
 	React.useEffect(() => {
 		scene.add(system.container);
 		return system.dispose;
@@ -27,7 +47,11 @@ export const ParticleSystem = () => {
 	return null;
 };
 
-const createParticlesSystem = (RAPIER: typeof IRAPIER, game: Game) => {
+const createParticlesSystem = (
+	RAPIER: typeof IRAPIER,
+	resourceModels: Record<Resource, THREE.Object3D>,
+	game: Game,
+) => {
 	const gravity = { x: 0.0, y: -9.81, z: 0.0 };
 	const world = new RAPIER.World(gravity);
 
@@ -97,12 +121,18 @@ const createParticlesSystem = (RAPIER: typeof IRAPIER, game: Game) => {
 	const container = new THREE.Object3D();
 
 	const createParticleMesh = (r: Resource) => {
-		const mesh = new THREE.Mesh(geometry, material);
-		return mesh;
+		const o = new THREE.Object3D();
+		o.add(resourceModels[r].clone());
+		// const mesh = new THREE.Mesh(geometry, material);
+		// o.add(mesh);
+		return o;
 	};
 
-	const geometry = new THREE.SphereGeometry(particlesRadius);
-	const material = new THREE.MeshStandardMaterial({ color: "orange" });
+	const geometry = new THREE.SphereGeometry(particlesRadius, 8, 8);
+	const material = new THREE.MeshStandardMaterial({
+		color: "orange",
+		wireframe: true,
+	});
 
 	const v = new THREE.Vector3();
 	const q = new THREE.Quaternion();
@@ -141,7 +171,7 @@ const createParticlesSystem = (RAPIER: typeof IRAPIER, game: Game) => {
 		}
 
 		while (container.children.length < bodies.length) {
-			container.add(createParticleMesh(0));
+			container.add(createParticleMesh("pumpkin"));
 		}
 
 		for (let i = container.children.length; i--; ) {

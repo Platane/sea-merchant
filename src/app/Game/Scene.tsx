@@ -11,7 +11,7 @@ export const Scene = () => (
 	<>
 		<MapControls
 			maxDistance={60}
-			minDistance={12}
+			minDistance={6}
 			enabled={true}
 			enableDamping
 			maxPolarAngle={Math.PI / 2 - Math.PI / 6}
@@ -23,6 +23,10 @@ export const Scene = () => (
 		<Ships />
 
 		<Ports />
+
+		<mesh>
+			<sphereGeometry args={[0.5, 32, 32]} />
+		</mesh>
 
 		{/*<mesh>
 			<boxGeometry args={[0.5, 0.5, 0.5]} />
